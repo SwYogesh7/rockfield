@@ -1,34 +1,34 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next'
-import { cormorant, jost } from '@/lib/fonts'
+import { barlowCondensed, inter } from '@/lib/fonts'
 import Providers from './providers'
 import Navbar from '@/components/layout/Navbar'
-import './globals.css'
 import { Footer } from '@/components/layout/Footer'
+import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'AURUM — Luxury Clothing Brand',
-    template: '%s | AURUM',
+    default: 'Rockfield — Built for the Road',
+    template: '%s | Rockfield',
   },
   description:
-    'Discover AURUM — heritage textiles and contemporary luxury. ' +
-    'Ethically sourced, thoughtfully designed clothing for the modern wardrobe.',
-  keywords: ['luxury clothing', 'heritage textiles', 'Indian fashion', 'AURUM'],
-  metadataBase: new URL('https://aurumclothing.in'),
+    'Rockfield — Sneakers, boots, and everyday footwear built for the road. ' +
+    'Shop men, women, and kids shoes with fast delivery across India.',
+  keywords: ['shoes', 'sneakers', 'boots', 'footwear', 'Rockfield', 'India'],
+  metadataBase: new URL('https://rockfieldshoes.in'),
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://aurumclothing.in',
-    siteName: 'AURUM',
-    title: 'AURUM — Luxury Clothing Brand',
-    description: 'Heritage textiles, contemporary luxury.',
+    url: 'https://rockfieldshoes.in',
+    siteName: 'Rockfield',
+    title: 'Rockfield — Built for the Road',
+    description: 'Sneakers, boots, and everyday footwear built for the road.',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'AURUM — Luxury Clothing',
+        alt: 'Rockfield — Footwear',
       },
     ],
   },
@@ -38,19 +38,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${jost.variable}`}>
+    <html lang="en" className={`${barlowCondensed.variable} ${inter.variable}`}>
       <body className="antialiased min-h-screen">
         <Providers>
           <Navbar />
-          <main id="main-content">
-            {children}
-          </main>
+          <main id="main-content">{children}</main>
           <Footer />
         </Providers>
       </body>

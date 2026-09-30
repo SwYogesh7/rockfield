@@ -20,14 +20,16 @@ const marqueeItems = [
 // The gold dot separator between items
 function GoldDot() {
   return (
-    <span style={{
-      display: 'inline-block',
-      width: '3px',
-      height: '3px',
-      borderRadius: '50%',
-      backgroundColor: 'var(--color-gold-500)',
-      flexShrink: 0,
-    }} />
+    <span
+      style={{
+        display: 'inline-block',
+        width: '3px',
+        height: '3px',
+        borderRadius: '50%',
+        backgroundColor: 'var(--color-gold-500)',
+        flexShrink: 0,
+      }}
+    />
   )
 }
 
@@ -36,23 +38,27 @@ function MarqueeItem({ text }: { text: string }) {
   return (
     // display: contents means this wrapper doesn't add any box
     // The children (dot + text) flow directly into the flex parent
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '1.5rem',
-      flexShrink: 0,
-    }}>
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '1.5rem',
+        flexShrink: 0,
+      }}
+    >
       <GoldDot />
-      <span style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: '0.625rem',
-        letterSpacing: '0.25em',
-        textTransform: 'uppercase',
-        color: 'rgba(255, 255, 255, 0.55)',
-        whiteSpace: 'nowrap',
-        // whiteSpace: nowrap — prevents text from wrapping to next line
-        // Critical: if text wraps, the scroll animation breaks
-      }}>
+      <span
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: '0.625rem',
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: 'rgba(255, 255, 255, 0.55)',
+          whiteSpace: 'nowrap',
+          // whiteSpace: nowrap — prevents text from wrapping to next line
+          // Critical: if text wraps, the scroll animation breaks
+        }}
+      >
         {text}
       </span>
     </span>
@@ -71,7 +77,7 @@ export default function Marquee() {
         backgroundColor: 'var(--color-dark-900)',
         paddingTop: '0.75rem',
         paddingBottom: '0.75rem',
-        overflow: 'hidden',   // hides items outside the visible area
+        overflow: 'hidden', // hides items outside the visible area
         width: '100%',
       }}
     >

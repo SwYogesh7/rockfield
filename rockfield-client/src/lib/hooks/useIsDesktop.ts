@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 // Convention: hooks are always named exports, not default exports
 export function useIsDesktop(breakpoint = 1024) {
   const [isDesktop, setIsDesktop] = useState(false)
-  const [mounted, setMounted]     = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)

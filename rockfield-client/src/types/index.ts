@@ -1,161 +1,146 @@
 // src/types/index.ts
-// ─────────────────────────────────────────────────────────────
-// All TypeScript interfaces for the AURUM platform.
-//
-// What is an "interface"?
-// It describes the SHAPE of an object — what properties
-// it has and what type each property is.
-//
-// What is a "type"?
-// Similar to interface but used for unions, primitives,
-// and computed types. We use both — interfaces for objects,
-// types for unions and aliases.
-// ─────────────────────────────────────────────────────────────
+// Rockfield shoe domain types.
+// Money is stored as integer paise (₹1 = 100 paise) to avoid float errors and match Razorpay.
 
+// ---------- Constants ----------
 
-// ─────────────────────────────────────────────────────────────
-// PRODUCT TYPES
-// These describe everything related to clothing products.
-// ─────────────────────────────────────────────────────────────
+export const GENDERS = ['men', 'women', 'kids', 'unisex'] as const
+export type Gender = (typeof GENDERS)[number]
 
-// A single image attached to a product variant
+// Basic categories for now; the client can add or remove later.
+export const CATEGORIES = ['sneakers', 'formal', 'casual', 'boots', 'sandals', 'sports'] as const
+export type ShoeCategory = (typeof CATEGORIES)[number]
+
+// UK/India sizing with half sizes (India uses the UK scale).
+export const UK_SIZES = [
+  3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 13,
+] as const
+export type UkSize = (typeof UK_SIZES)[number]
+
+// ---------- Product ----------
+
 export interface ProductImage {
-  id: string
   url: string
-  altText: string    // important for accessibility + SEO
-  width: number
-  height: number
-  isPrimary: boolean // the main image shown on product card
+  alt: string
+  /** Suggested order: side, front, back, sole, top, on-foot */
+  angle?: 'side' | 'front' | 'back' | 'sole' | 'top' | 'on-foot' | 'detail'
 }
 
-// A variant is one specific version of a product.
-// Example: "Blue Silk Dress, Size M" is one variant.
-// "Blue Silk Dress, Size L" is a different variant.
-// Each variant has its own SKU, stock, and price.
-//
-// What is SKU?
-// Stock Keeping Unit — a unique code for each exact product.
-// "SILK-DRESS-BLUE-M" — helps with inventory tracking.
+export interface ProductColor {
+  id: string
+  name: string // e.g. "Tan Brown"
+  slug: string // e.g. "tan-brown"
+  hex: string // swatch colour
+  images: ProductImage[] // 5-6 per colour; first is primary
+}
+
 export interface ProductVariant {
   id: string
-  sku: string
-  colour: string
-  colourHex: string       // e.g. "#E8D5B0" — for the colour swatch dot
-  size: string            // "XS" | "S" | "M" | "L" | "XL"
-  priceOverride: number | null  // if null, use the base product price
-  stockQuantity: number
-  images: ProductImage[]
-  isAvailable: boolean
+  sku: string // e.g. RF-SNK-001-TAN-8.5
+  colorId: string // links to ProductColor.id
+  size: UkSize
+  stock: number // tracked per colour x size
+  price?: number // paise; overrides Product.basePrice when set
 }
 
-// The main product object
+export interface ProductAttributes {
+  material?: string // Leather, Suede, Mesh...
+  sole?: string // Rubber, EVA...
+  closure?: 'laces' | 'slip-on' | 'velcro' | 'buckle' | 'zip'
+  useCase?: string // Running, Office, Daily wear...
+  care?: string
+}
+
 export interface Product {
-  id: string
-  slug: string             // URL-friendly name: "ivory-silk-dress"
-  name: string
-  description: string
-  shortDescription: string // one line — shown on product card
-  category: ProductCategory
-  brand: string
-  basePrice: number
-  compareAtPrice: number | null  // original price before discount
-  variants: ProductVariant[]
-  tags: string[]           // ["new", "bestseller", "sale"]
-  isFeatured: boolean
-  isActive: boolean
-  averageRating: number
-  reviewCount: number
-  createdAt: string
-}
-
-// A lightweight version of Product used in listing pages.
-// We don't need ALL product data for a card —
-// loading full descriptions for 40 cards wastes bandwidth.
-export interface ProductCard {
   id: string
   slug: string
   name: string
-  shortDescription: string
-  category: ProductCategory
-  basePrice: number
-  compareAtPrice: number | null
-  primaryImage: ProductImage
-  availableColours: string[]   // colour hex values for swatches
-  availableSizes: string[]
+  description: string
+  category: ShoeCategory
+  gender: Gender
+  basePrice: number // paise
+  compareAtPrice?: number // paise, original price for sale display
+  colors: ProductColor[]
+  variants: ProductVariant[]
+  attributes: ProductAttributes
   tags: string[]
-  averageRating: number
+  rating: number
   reviewCount: number
+  isNew: boolean
+  isActive: boolean
+  createdAt: string // ISO date
 }
 
-// Product category
-export interface ProductCategory {
+/** Lightweight shape for listing pages and cards */
+export interface ProductCardData {
   id: string
+  slug: string
   name: string
-  slug: string       // "women", "men", "accessories"
-  imageUrl: string
-  parentId: string | null  // null = top-level category
+  category: ShoeCategory
+  gender: Gender
+  price: number // lowest variant price, paise
+  compareAtPrice?: number
+  image: string // primary image URL of first colour
+  colors: Pick<ProductColor, 'id' | 'name' | 'hex'>[]
+  rating: number
+  reviewCount: number
+  isNew: boolean
+  inStock: boolean
 }
 
-// A customer review on a product
-export interface ProductReview {
-  id: string
-  productId: string
-  userId: string
-  userName: string
-  rating: number        // 1 to 5
-  title: string
-  body: string
-  isVerifiedPurchase: boolean
-  createdAt: string
-}
+// ---------- Cart ----------
 
-
-// ─────────────────────────────────────────────────────────────
-// CART TYPES
-// The cart lives in Zustand (client state).
-// We define its shape here.
-// ─────────────────────────────────────────────────────────────
-
-// One item inside the cart
 export interface CartItem {
-  id: string               // cart item id
+  variantId: string // identifies colour + size
   productId: string
-  variantId: string
-  slug: string             // needed to link back to product page
+  slug: string
   name: string
-  colour: string
-  size: string
-  price: number
+  colorName: string
+  size: UkSize
+  image: string
+  unitPrice: number // paise (re-validate on the server at checkout)
   quantity: number
-  image: ProductImage
-  maxQuantity: number      // can't add more than this (stock limit)
 }
 
-// The full cart
-export interface Cart {
-  items: CartItem[]
-  couponCode: string | null
-  discountAmount: number
-  
-  // These are computed values — calculated from items
-  // We'll derive these in our Zustand store
-  subtotal: number
-  total: number
-  itemCount: number
+// ---------- Filters ----------
+
+export interface ProductFilters {
+  category?: ShoeCategory[]
+  gender?: Gender[]
+  colors?: string[] // colour slugs
+  sizes?: UkSize[] // matches only sizes that are in stock
+  minPrice?: number
+  maxPrice?: number
+  material?: string[]
+  inStockOnly?: boolean
 }
 
+export type SortOption = 'featured' | 'newest' | 'price-asc' | 'price-desc' | 'rating'
 
-// ─────────────────────────────────────────────────────────────
-// USER TYPES
-// ─────────────────────────────────────────────────────────────
+// ---------- Order ----------
+
+export type OrderStatus =
+  | 'placed'
+  | 'confirmed'
+  | 'packed'
+  | 'shipped'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'cancelled'
+  | 'return_initiated'
+  | 'returned'
+
+export type PaymentMethod = 'upi' | 'card' | 'netbanking' | 'emi' | 'cod'
+
+export type PaymentStatus = 'pending' | 'captured' | 'failed' | 'refunded'
 
 export interface Address {
   id: string
-  label: string        // "Home", "Office", "Other"
+  label: string // "Home", "Office"
   fullName: string
   phone: string
   line1: string
-  line2: string | null
+  line2?: string
   city: string
   state: string
   pincode: string
@@ -167,114 +152,19 @@ export interface User {
   name: string
   email: string
   phone: string
-  avatar: string | null
+  avatar?: string
   addresses: Address[]
   createdAt: string
 }
 
+// ---------- API shapes ----------
 
-// ─────────────────────────────────────────────────────────────
-// ORDER TYPES
-// ─────────────────────────────────────────────────────────────
-
-// What is a union type?
-// It means the value can be ONE of these specific strings.
-// TypeScript will error if you set status = "refunded"
-// because "refunded" is not in this list.
-export type OrderStatus =
-  | 'pending_payment'
-  | 'confirmed'
-  | 'processing'
-  | 'shipped'
-  | 'out_for_delivery'
-  | 'delivered'
-  | 'cancelled'
-  | 'refund_initiated'
-  | 'refunded'
-
-export type PaymentMethod =
-  | 'upi'
-  | 'card'
-  | 'netbanking'
-  | 'wallet'
-  | 'cod'
-  | 'emi'
-
-export type PaymentStatus =
-  | 'pending'
-  | 'captured'
-  | 'failed'
-  | 'refunded'
-
-// One item within an order
-// Note: we store a SNAPSHOT of the product name/price.
-// Why? If the product price changes later, the order
-// should still show what the customer actually paid.
-export interface OrderItem {
-  id: string
-  productId: string
-  variantId: string
-  skuSnapshot: string      // SKU at time of purchase
-  nameSnapshot: string     // product name at time of purchase
-  colourSnapshot: string
-  sizeSnapshot: string
-  unitPrice: number        // price at time of purchase
-  quantity: number
-  image: ProductImage
-}
-
-export interface Order {
-  id: string
-  userId: string
-  status: OrderStatus
-  items: OrderItem[]
-  shippingAddress: Address
-  subtotal: number
-  discountAmount: number
-  shippingCost: number
-  taxAmount: number
-  total: number
-  couponCode: string | null
-  paymentMethod: PaymentMethod
-  paymentStatus: PaymentStatus
-  razorpayOrderId: string | null
-  trackingNumber: string | null
-  trackingUrl: string | null
-  estimatedDelivery: string | null
-  notes: string | null
-  createdAt: string
-  updatedAt: string
-}
-
-// Lightweight version for order list page
-export interface OrderSummary {
-  id: string
-  status: OrderStatus
-  itemCount: number
-  total: number
-  primaryImage: ProductImage
-  primaryItemName: string
-  createdAt: string
-}
-
-
-// ─────────────────────────────────────────────────────────────
-// API RESPONSE TYPES
-// Our .NET API always returns data in a consistent shape.
-// This is the "wrapper" around every response.
-// ─────────────────────────────────────────────────────────────
-
-// Generic API response — T is a "generic type parameter"
-// It means: ApiResponse<Product> = a response containing a Product
-//           ApiResponse<Order[]>  = a response containing a list of Orders
-// This way we have ONE type that works for ALL responses.
 export interface ApiResponse<T> {
   data: T
   message: string | null
   success: boolean
 }
 
-// For paginated lists (product listing page)
 export interface PaginatedResponse<T> {
   data: T[]
   page: number
@@ -285,59 +175,11 @@ export interface PaginatedResponse<T> {
   hasPreviousPage: boolean
 }
 
-// Error shape — matches RFC 9457 Problem Details
-// from our .NET backend
+/** RFC 9457 Problem Details */
 export interface ApiError {
   type: string
   title: string
   status: number
   detail: string
   traceId: string
-}
-
-
-// ─────────────────────────────────────────────────────────────
-// FILTER TYPES
-// Used on the product listing page
-// ─────────────────────────────────────────────────────────────
-
-export interface ProductFilters {
-  category: string | null
-  minPrice: number | null
-  maxPrice: number | null
-  colours: string[]
-  sizes: string[]
-  tags: string[]
-  sortBy: SortOption
-}
-
-// What is a const enum?
-// Like a union type but with named constants —
-// makes your code more readable.
-// Instead of sortBy = "price_asc" (easy to typo)
-// you write sortBy = SortOption.PriceAsc (IDE autocompletes)
-export type SortOption =
-  | 'newest'
-  | 'price_asc'
-  | 'price_desc'
-  | 'popularity'
-  | 'rating'
-
-
-// ─────────────────────────────────────────────────────────────
-// NAVIGATION TYPES
-// Used for the navbar mega menu
-// ─────────────────────────────────────────────────────────────
-
-export interface NavItem {
-  label: string
-  href: string
-  children?: NavSubItem[]  // the ? means this property is optional
-}
-
-export interface NavSubItem {
-  label: string
-  href: string
-  description?: string  // optional — shown in mega menu
-  imageUrl?: string
 }

@@ -13,16 +13,17 @@ import { motion } from 'framer-motion'
 // TypeScript will error if we forget to pass any of these.
 // ─────────────────────────────────────────────────────────────
 interface ProductCardProps {
-  name:         string
-  subtitle:     string        // e.g. "Cashmere blend · 3 colours"
-  price:        number
+  name: string
+  subtitle: string // e.g. "3 colours"
+  price: number
   comparePrice: number | null // original price if on sale
-  badge:        string | null // "New", "−20%", or null
-  emoji:        string        // placeholder until we have real images
-  bgColor:      string        // card image background colour
-  rating:       number        // 1–5
-  slug:         string        // URL: /product/obsidian-overcoat
-  index:        number        // position in grid — used for stagger delay
+  badge: string | null // "New", "-20%", or null
+  image?: string // product image URL
+  emoji?: string // fallback placeholder
+  bgColor: string // card image background colour
+  rating: number // 1–5
+  slug: string // URL: /product/terrain-runner-pro
+  index: number // position in grid — used for stagger delay
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -48,9 +49,7 @@ function StarRating({ rating }: { rating: number }) {
           style={{
             fontSize: '11px',
             // Ternary: if star number ≤ rating → gold, else light grey
-            color: star <= rating
-              ? 'var(--color-gold-500)'
-              : 'var(--color-ivory-400)',
+            color: star <= rating ? 'var(--color-gold-500)' : 'var(--color-ivory-400)',
           }}
         >
           ★
@@ -61,12 +60,20 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export default function ProductCard({
-  name, subtitle, price, comparePrice,
-  badge, emoji, bgColor, rating, slug, index,
+  name,
+  subtitle,
+  price,
+  comparePrice,
+  badge,
+  emoji,
+  image,
+  bgColor,
+  rating,
+  slug,
+  index,
 }: ProductCardProps) {
-
   // isHovered — controls image background and action icon visibility
-  const [isHovered,    setIsHovered]    = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   // isWishlisted — toggles heart icon fill
   const [isWishlisted, setIsWishlisted] = useState(false)
@@ -97,56 +104,72 @@ export default function ProductCard({
     >
       {/* Link wraps the entire card — clicking anywhere navigates */}
       <Link href={`/product/${slug}`} style={{ textDecoration: 'none', display: 'block' }}>
-
         {/* ── IMAGE AREA ─────────────────────────────────── */}
-        <div style={{
-          backgroundColor: bgColor,
-          borderRadius: 'var(--radius-md)',
-          height: '220px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-          marginBottom: '0.875rem',
-          // filter: brightness — darkens card on hover slightly
-          // This is more reliable than computing a darker hex colour
-          filter: isHovered ? 'brightness(0.96)' : 'brightness(1)',
-          transition: 'filter 250ms ease',
-        }}>
-
-          {/* Product emoji — placeholder for real product images */}
-          {/* We replace this with next/image when we have real photos */}
-          <span style={{
-            fontSize: '3.5rem',
-            // Slight scale up on hover — subtle but satisfying
-            transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-            transition: 'transform 300ms ease',
-            display: 'block',
-          }}>
-            {emoji}
-          </span>
+        <div
+          style={{
+            backgroundColor: bgColor,
+            borderRadius: 'var(--radius-md)',
+            height: '220px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            overflow: 'hidden',
+            marginBottom: '0.875rem',
+            // filter: brightness — darkens card on hover slightly
+            // This is more reliable than computing a darker hex colour
+            filter: isHovered ? 'brightness(0.96)' : 'brightness(1)',
+            transition: 'filter 250ms ease',
+          }}
+        >
+          {/* Product image or emoji placeholder */}
+          {image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={image}
+              alt={name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                transition: 'transform 300ms ease',
+              }}
+            />
+          ) : (
+            <span
+              style={{
+                fontSize: '3.5rem',
+                transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                transition: 'transform 300ms ease',
+                display: 'block',
+              }}
+            >
+              {emoji}
+            </span>
+          )}
 
           {/* ── BADGE ────────────────────────────────────── */}
           {/* badge && ... = only render if badge is not null */}
           {badge && (
-            <div style={{
-              position: 'absolute',
-              top: '0.625rem',
-              left: '0.625rem',
-              // "New" badge = dark background, sale badge = gold
-              backgroundColor: badge === 'New'
-                ? 'var(--color-dark-900)'
-                : 'var(--color-gold-500)',
-              color: 'white',
-              fontSize: '0.5625rem',
-              letterSpacing: '0.12em',
-              padding: '0.25rem 0.5625rem',
-              borderRadius: 'var(--radius-sm)',
-              textTransform: 'uppercase',
-              fontFamily: 'var(--font-body)',
-              fontWeight: 500,
-            }}>
+            <div
+              style={{
+                position: 'absolute',
+                top: '0.625rem',
+                left: '0.625rem',
+                // "New" badge = dark background, sale badge = gold
+                backgroundColor:
+                  badge === 'New' ? 'var(--color-dark-900)' : 'var(--color-gold-500)',
+                color: 'white',
+                fontSize: '0.5625rem',
+                letterSpacing: '0.12em',
+                padding: '0.25rem 0.5625rem',
+                borderRadius: 'var(--radius-sm)',
+                textTransform: 'uppercase',
+                fontFamily: 'var(--font-body)',
+                fontWeight: 500,
+              }}
+            >
               {badge}
             </div>
           )}
@@ -221,52 +244,62 @@ export default function ProductCard({
         {/* ── PRODUCT INFO ───────────────────────────────── */}
         <div>
           {/* Product name */}
-          <div style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.8125rem',
-            color: 'var(--color-dark-800)',
-            fontWeight: 500,
-            marginBottom: '0.25rem',
-            letterSpacing: '0.02em',
-          }}>
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.8125rem',
+              color: 'var(--color-dark-800)',
+              fontWeight: 500,
+              marginBottom: '0.25rem',
+              letterSpacing: '0.02em',
+            }}
+          >
             {name}
           </div>
 
           {/* Subtitle — material and colour count */}
-          <div style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.75rem',
-            color: 'var(--color-dark-400)',
-            marginBottom: '0.625rem',
-          }}>
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.75rem',
+              color: 'var(--color-dark-400)',
+              marginBottom: '0.625rem',
+            }}
+          >
             {subtitle}
           </div>
 
           {/* Price row */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
             {/* Prices */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-              <span style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.9375rem',
-                color: 'var(--color-dark-900)',
-                fontWeight: 500,
-              }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '0.9375rem',
+                  color: 'var(--color-dark-900)',
+                  fontWeight: 500,
+                }}
+              >
                 {formatPrice(price)}
               </span>
 
               {/* Original price — only shows if comparePrice exists */}
               {comparePrice && (
-                <span style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '0.75rem',
-                  color: 'var(--color-dark-200)',
-                  textDecoration: 'line-through',
-                }}>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '0.75rem',
+                    color: 'var(--color-dark-200)',
+                    textDecoration: 'line-through',
+                  }}
+                >
                   {formatPrice(comparePrice)}
                 </span>
               )}

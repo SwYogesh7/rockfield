@@ -65,38 +65,43 @@ const products = [
 
 export default function NewArrivals() {
   return (
-    <section style={{
-      backgroundColor: 'var(--color-ivory-100)',
-      paddingTop: '5rem',
-      paddingBottom: '5rem',
-    }}>
+    <section
+      style={{
+        backgroundColor: 'var(--color-ivory-100)',
+        paddingTop: '5rem',
+        paddingBottom: '5rem',
+      }}
+    >
       <div className="container-luxury">
-
         {/* ── SECTION HEADER ─────────────────────────────── */}
         {/* "motion" needs 'use client' — but since this is a
             Server Component, we can't use motion directly.
             The section header is simple enough for plain HTML. */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-          marginBottom: '2.5rem',
-        }}>
-
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'space-between',
+            marginBottom: '2.5rem',
+          }}
+        >
           {/* Section title */}
-          <h2 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-            fontWeight: 300,
-            color: 'var(--color-dark-900)',
-            lineHeight: 1.2,
-          }}>
-            New{' '}
-            {/* italic gold word — same pattern as hero heading */}
-            <em style={{
-              fontStyle: 'italic',
-              color: 'var(--color-gold-500)',
-            }}>
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
+              fontWeight: 300,
+              color: 'var(--color-dark-900)',
+              lineHeight: 1.2,
+            }}
+          >
+            New {/* italic gold word — same pattern as hero heading */}
+            <em
+              style={{
+                fontStyle: 'italic',
+                color: 'var(--color-gold-500)',
+              }}
+            >
               Arrivals
             </em>
           </h2>
@@ -124,15 +129,17 @@ export default function NewArrivals() {
 
         {/* ── PRODUCT GRID ───────────────────────────────── */}
         {/* 4 columns on desktop, 2 on tablet, 1 on mobile */}
-        <div style={{
-          display: 'grid',
-          // repeat(auto-fill, minmax(220px, 1fr)):
-          // auto-fill = as many columns as fit
-          // minmax(220px, 1fr) = each column min 220px, max equal share
-          // This is responsive WITHOUT media queries — very clean
-          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-          gap: '1.5rem',
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            // repeat(auto-fill, minmax(220px, 1fr)):
+            // auto-fill = as many columns as fit
+            // minmax(220px, 1fr) = each column min 220px, max equal share
+            // This is responsive WITHOUT media queries — very clean
+            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+            gap: '1.5rem',
+          }}
+        >
           {products.map((product, index) => (
             <ProductCard
               key={product.id}
@@ -144,7 +151,6 @@ export default function NewArrivals() {
             />
           ))}
         </div>
-
       </div>
     </section>
   )

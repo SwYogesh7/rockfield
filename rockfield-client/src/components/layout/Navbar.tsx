@@ -9,11 +9,12 @@ import { useCartStore } from '@/store/cart'
 import { useIsDesktop } from '@/lib/hooks/useIsDesktop'
 
 const navLinks = [
-  { label: 'Women',       href: '/shop/women' },
-  { label: 'Men',         href: '/shop/men' },
-  { label: 'Collections', href: '/collections' },
-  { label: 'Atelier',     href: '/atelier' },
-  { label: 'Stories',     href: '/stories' },
+  { label: 'Men', href: '/shop/men' },
+  { label: 'Women', href: '/shop/women' },
+  { label: 'Kids', href: '/shop/kids' },
+  { label: 'Sneakers', href: '/shop/sneakers' },
+  { label: 'Boots', href: '/shop/boots' },
+  { label: 'Sale', href: '/shop?sale=true' },
 ]
 
 // Reusable icon button style — used for Search, Wishlist, Cart
@@ -31,14 +32,14 @@ const iconBtnStyle: React.CSSProperties = {
 }
 
 export default function Navbar() {
-  const [isScrolled,    setIsScrolled]    = useState(false)
-  const [isMobileOpen,  setIsMobileOpen]  = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   // Our custom hook — true when screen >= 1024px
   const isDesktop = useIsDesktop()
 
   const itemCount = useCartStore((state) => state.getItemCount())
-  const openCart  = useCartStore((state) => state.openCart)
+  const openCart = useCartStore((state) => state.openCart)
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
@@ -53,39 +54,45 @@ export default function Navbar() {
   }, [isDesktop])
 
   return (
-    <header style={{
-      position: 'fixed',
-      top: 0, left: 0, right: 0,
-      zIndex: 200,
-      transition: 'background-color 400ms ease, border-color 400ms ease',
-      backgroundColor: isScrolled ? 'var(--color-ivory-100)' : 'transparent',
-      borderBottom: `0.5px solid ${isScrolled ? 'var(--color-ivory-300)' : 'transparent'}`,
-    }}>
-
+    <header
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 200,
+        transition: 'background-color 400ms ease, border-color 400ms ease',
+        backgroundColor: isScrolled ? 'var(--color-ivory-100)' : 'transparent',
+        borderBottom: `0.5px solid ${isScrolled ? 'var(--color-ivory-300)' : 'transparent'}`,
+      }}
+    >
       <div className="container-luxury">
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          // Height changes based on screen size
-          height: isDesktop ? '5rem' : '4rem',
-          transition: 'height 300ms ease',
-        }}>
-
-          {/* ── LOGO ── */}
-          <Link href="/" style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: isDesktop ? '1.375rem' : '1.125rem',
-            letterSpacing: '0.35em',
-            color: 'var(--color-dark-900)',
-            textDecoration: 'none',
-            flexShrink: 0,
-            transition: 'color 250ms ease, font-size 300ms ease',
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            // Height changes based on screen size
+            height: isDesktop ? '5rem' : '4rem',
+            transition: 'height 300ms ease',
           }}
-          onMouseEnter={e => e.currentTarget.style.color = 'var(--color-gold-500)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'var(--color-dark-900)'}
+        >
+          {/* ── LOGO ── */}
+          <Link
+            href="/"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: isDesktop ? '1.375rem' : '1.125rem',
+              letterSpacing: '0.35em',
+              color: 'var(--color-dark-900)',
+              textDecoration: 'none',
+              flexShrink: 0,
+              transition: 'color 250ms ease, font-size 300ms ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-gold-500)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-dark-900)')}
           >
-            AURUM
+            ROCKFIELD
           </Link>
 
           {/* ── DESKTOP NAV — only rendered on desktop ── */}
@@ -109,8 +116,8 @@ export default function Navbar() {
                     transition: 'color 250ms ease',
                     position: 'relative',
                   }}
-                  onMouseEnter={e => e.currentTarget.style.color = 'var(--color-dark-900)'}
-                  onMouseLeave={e => e.currentTarget.style.color = 'var(--color-dark-400)'}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-dark-900)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-dark-400)')}
                 >
                   {link.label}
                 </Link>
@@ -120,13 +127,16 @@ export default function Navbar() {
 
           {/* ── ACTION ICONS ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.125rem' }}>
-
             {/* Search — always visible */}
             <button
               aria-label="Search"
               style={iconBtnStyle}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--color-dark-400)'}
+              onMouseEnter={(e) =>
+                ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)')
+              }
+              onMouseLeave={(e) =>
+                ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-400)')
+              }
             >
               <Search size={18} strokeWidth={1.5} />
             </button>
@@ -136,8 +146,12 @@ export default function Navbar() {
               <button
                 aria-label="Wishlist"
                 style={iconBtnStyle}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--color-dark-400)'}
+                onMouseEnter={(e) =>
+                  ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)')
+                }
+                onMouseLeave={(e) =>
+                  ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-400)')
+                }
               >
                 <Heart size={18} strokeWidth={1.5} />
               </button>
@@ -148,25 +162,33 @@ export default function Navbar() {
               onClick={openCart}
               aria-label={`Cart — ${itemCount} items`}
               style={{ ...iconBtnStyle, position: 'relative' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--color-dark-400)'}
+              onMouseEnter={(e) =>
+                ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)')
+              }
+              onMouseLeave={(e) =>
+                ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-400)')
+              }
             >
               <ShoppingBag size={18} strokeWidth={1.5} />
               {itemCount > 0 && (
-                <span style={{
-                  position: 'absolute',
-                  top: '2px', right: '2px',
-                  backgroundColor: 'var(--color-gold-500)',
-                  color: 'white',
-                  fontSize: '9px',
-                  fontWeight: 600,
-                  width: '16px', height: '16px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'var(--font-body)',
-                }}>
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '2px',
+                    right: '2px',
+                    backgroundColor: 'var(--color-gold-500)',
+                    color: 'white',
+                    fontSize: '9px',
+                    fontWeight: 600,
+                    width: '16px',
+                    height: '16px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: 'var(--font-body)',
+                  }}
+                >
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>
               )}
@@ -175,16 +197,21 @@ export default function Navbar() {
             {/* Mobile hamburger — mobile only */}
             {!isDesktop && (
               <button
-                onClick={() => setIsMobileOpen(prev => !prev)}
+                onClick={() => setIsMobileOpen((prev) => !prev)}
                 aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
                 style={{ ...iconBtnStyle, marginLeft: '0.25rem' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--color-dark-400)'}
-              >
-                {isMobileOpen
-                  ? <X    size={20} strokeWidth={1.5} />
-                  : <Menu size={20} strokeWidth={1.5} />
+                onMouseEnter={(e) =>
+                  ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)')
                 }
+                onMouseLeave={(e) =>
+                  ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-400)')
+                }
+              >
+                {isMobileOpen ? (
+                  <X size={20} strokeWidth={1.5} />
+                ) : (
+                  <Menu size={20} strokeWidth={1.5} />
+                )}
               </button>
             )}
           </div>
@@ -205,7 +232,10 @@ export default function Navbar() {
               borderTop: '0.5px solid var(--color-ivory-300)',
             }}
           >
-            <div className="container-luxury" style={{ paddingTop: '1.5rem', paddingBottom: '1.5rem' }}>
+            <div
+              className="container-luxury"
+              style={{ paddingTop: '1.5rem', paddingBottom: '1.5rem' }}
+            >
               {navLinks.map((link, index) => (
                 <motion.div
                   key={link.href}
@@ -228,8 +258,8 @@ export default function Navbar() {
                       textDecoration: 'none',
                       transition: 'color 250ms ease',
                     }}
-                    onMouseEnter={e => e.currentTarget.style.color = 'var(--color-gold-500)'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'var(--color-dark-700)'}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-gold-500)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-dark-700)')}
                   >
                     {link.label}
                   </Link>
