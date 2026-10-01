@@ -50,7 +50,7 @@ export default async function NewArrivals() {
 
           {/* View all link */}
           <Link
-            href="/shop?sort=newest"
+            href="/shop?sortBy=newest"
             className="view-all-link"
             style={{
               fontFamily: 'var(--font-body)',
@@ -81,15 +81,7 @@ export default async function NewArrivals() {
           {products.map((product, index) => (
             <ProductCard
               key={product.id}
-              name={product.name}
-              subtitle={`${product.colors.length} colour${product.colors.length > 1 ? 's' : ''}`}
-              price={product.price}
-              comparePrice={product.compareAtPrice ?? null}
-              badge={product.isNew ? 'New' : null}
-              image={product.image}
-              bgColor="var(--color-ivory-200)"
-              rating={product.rating}
-              slug={product.slug}
+              data={product}
               index={index}
             />
           ))}

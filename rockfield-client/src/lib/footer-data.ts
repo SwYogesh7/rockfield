@@ -1,7 +1,7 @@
 // src/lib/footer-data.ts
 export const footerLinks = {
   shop: [
-    { label: 'New Arrivals', href: '/shop?sort=newest' },
+    { label: 'New Arrivals', href: '/shop?sortBy=newest' },
     { label: 'Sneakers', href: '/shop/sneakers' },
     { label: 'Boots', href: '/shop/boots' },
     { label: 'Sports', href: '/shop/sports' },

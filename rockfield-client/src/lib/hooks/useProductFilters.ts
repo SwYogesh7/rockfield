@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useCallback } from 'react'
-import type { SortOption } from '@/types'
+import type { SortOption, ShoeCategory, Gender, UkSize, ProductFilters } from '@/types'
 import { PRICE_MIN_PAISE, PRICE_MAX_PAISE } from '@/constants'
 
 export function useProductFilters() {
@@ -10,77 +10,106 @@ export function useProductFilters() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  // Read a single param from the URL
   const get = (key: string) => searchParams.get(key)
-
-  // Read a comma-separated param as an array
-  // e.g. ?colours=black,navy  →  ["black", "navy"]
   const getArray = (key: string): string[] => {
     const val = searchParams.get(key)
     return val ? val.split(',').filter(Boolean) : []
   }
 
-  // Build the filters object from the current URL
-  // Every time the URL changes, this re-runs automatically
-  const filters = {
-    category: get('category') ?? undefined,
-    minPrice: get('minPrice') ? Number(get('minPrice')) : undefined,
-    maxPrice: get('maxPrice') ? Number(get('maxPrice')) : undefined,
-    sortBy: (get('sortBy') as SortOption) ?? ('featured' as SortOption),
+  // Derive filters from URL
+  const colors = getArray('colors')
+  const sizes = getArray('sizes').map(Number) as UkSize[]
+  const material = getArray('material')
+  const gender = getArray('gender') as Gender[]
+  
+  // Category can be in URL or path (e.g., /shop/sneakers)
+  // But usually we manage it via route params. We'll support it in searchParams for flexibility.
+  const categoryParam = getArray('category') as ShoeCategory[]
+  const inStockOnly = get('inStockOnly') === 'true'
+  const minPrice = get('minPrice') ? Number(get('minPrice')) : undefined
+  const maxPrice = get('maxPrice') ? Number(get('maxPrice')) : undefined
+  const sortBy = (get('sortBy') as SortOption) ?? 'featured'
+  const page = get('page') ? Number(get('page')) : 1
+
+  const activeCount = 
+    colors.length + 
+    sizes.length + 
+    material.length + 
+    gender.length + 
+    categoryParam.length + 
+    (inStockOnly ? 1 : 0) +
+    (minPrice !== undefined && minPrice > PRICE_MIN_PAISE ? 1 : 0) +
+    (maxPrice !== undefined && maxPrice < PRICE_MAX_PAISE ? 1 : 0)
+
+  // Raw parsed filters ready for service layer
+  const parsedFilters: ProductFilters = {
+    category: categoryParam.length ? categoryParam : undefined,
+    gender: gender.length ? gender : undefined,
+    colors: colors.length ? colors : undefined,
+    sizes: sizes.length ? sizes : undefined,
+    material: material.length ? material : undefined,
+    inStockOnly: inStockOnly || undefined,
+    minPrice,
+    maxPrice,
   }
 
-  // Updates ONE key in the URL without touching any other params
   const setFilter = useCallback(
-    (key: string, value: string | string[] | null) => {
+    (key: string, value: string | string[] | boolean | number | null) => {
       const params = new URLSearchParams(searchParams.toString())
 
-      if (value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
-        // Empty value = remove the param entirely
+      if (value === null || value === '' || value === false || (Array.isArray(value) && value.length === 0)) {
         params.delete(key)
       } else if (Array.isArray(value)) {
-        // Array = join as comma-separated string
         params.set(key, value.join(','))
       } else {
-        params.set(key, value)
+        params.set(key, String(value))
+      }
+      
+      // Reset page to 1 when filters change (unless the key being changed is page)
+      if (key !== 'page') {
+        params.delete('page')
       }
 
-      // replace (not push) so filters don't pile up in browser history
       router.replace(`${pathname}?${params.toString()}`, { scroll: false })
     },
     [searchParams, pathname, router]
   )
 
-  // Adds a value to an array filter if absent, removes it if present
-  // e.g. clicking "Black" colour twice: adds then removes
   const toggleArrayFilter = useCallback(
     (key: string, value: string) => {
-      const current = getArray(key)
+      const val = searchParams.get(key)
+      const current = val ? val.split(',').filter(Boolean) : []
       const next = current.includes(value)
         ? current.filter((v) => v !== value)
         : [...current, value]
       setFilter(key, next)
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams, setFilter]
   )
 
-  // Removes ALL filters — navigates back to clean /shop
   const clearAll = useCallback(() => {
-    router.replace(pathname, { scroll: false })
-  }, [router, pathname])
-
-  // Total count of active filters — used for the badge on mobile
-  // e.g. "Filters (3)"
-  const activeCount =
-    (filters.category ? 1 : 0) +
-    (filters.minPrice !== undefined && filters.minPrice > PRICE_MIN_PAISE ? 1 : 0) +
-    (filters.maxPrice !== undefined && filters.maxPrice < PRICE_MAX_PAISE ? 1 : 0)
+    // Retain sorting, clear everything else
+    const sort = searchParams.get('sortBy')
+    const params = new URLSearchParams()
+    if (sort) params.set('sortBy', sort)
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }, [router, pathname, searchParams])
 
   return {
-    filters,
+    parsedFilters,
+    colors,
+    sizes,
+    material,
+    gender,
+    categoryParam,
+    inStockOnly,
+    minPrice,
+    maxPrice,
+    sortBy,
+    page,
+    activeCount,
     setFilter,
     toggleArrayFilter,
     clearAll,
-    activeCount,
   }
 }

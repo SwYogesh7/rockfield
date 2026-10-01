@@ -1,34 +1,20 @@
-// src/components/product/ProductCard.tsx
 'use client'
 
-// useState — tracks hover and wishlist toggle state
 import { useState } from 'react'
 import Link from 'next/link'
-import { Heart, Eye } from 'lucide-react'
+import Image from 'next/image'
+import { Heart } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
+import type { ProductCardData } from '@/types'
 
-// ─────────────────────────────────────────────────────────────
-// PROPS INTERFACE
-// Defines exactly what data this card needs to render.
-// TypeScript will error if we forget to pass any of these.
-// ─────────────────────────────────────────────────────────────
 interface ProductCardProps {
-  name: string
-  subtitle: string // e.g. "3 colours"
-  price: number // paise — formatted at display
-  comparePrice: number | null // original price if on sale
-  badge: string | null // "New", "-20%", or null
-  image?: string // product image URL
-  bgColor: string // card image background colour (ivory shade)
-  rating: number // 1–5
-  slug: string // URL: /product/terrain-runner-pro
-  index: number // position in grid — used for stagger delay
+  data: ProductCardData
+  index?: number
+  priority?: boolean
 }
 
-// ─────────────────────────────────────────────────────────────
-// HELPER: FORMAT PRICE (paise → ₹)
-// ─────────────────────────────────────────────────────────────
-function formatPrice(paise: number): string {
+function formatPrice(paise: number) {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
@@ -37,70 +23,28 @@ function formatPrice(paise: number): string {
   }).format(paise / 100)
 }
 
-// ─────────────────────────────────────────────────────────────
-// HELPER: STAR RATING
-// ─────────────────────────────────────────────────────────────
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div style={{ display: 'flex', gap: '1px' }}>
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          style={{
-            fontSize: '11px',
-            color: star <= rating ? 'var(--color-gold-500)' : 'var(--color-ivory-400)',
-          }}
-        >
-          ★
-        </span>
-      ))}
-    </div>
-  )
-}
-
-// ─────────────────────────────────────────────────────────────
-// IMAGE PLACEHOLDER — ivory rectangle, no emoji
-// Shown when no image URL is provided.
-// ─────────────────────────────────────────────────────────────
 function PlaceholderImage() {
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'var(--color-ivory-300)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <div
-        style={{
-          width: '40%',
-          height: '40%',
-          backgroundColor: 'var(--color-ivory-400)',
-          borderRadius: '2px',
-          opacity: 0.5,
-        }}
-      />
+    <div className="flex h-full w-full items-center justify-center bg-ivory-300">
+      <div className="h-2/5 w-2/5 rounded-[2px] bg-ivory-400 opacity-50" />
     </div>
   )
 }
 
-export default function ProductCard({
-  name,
-  subtitle,
-  price,
-  comparePrice,
-  badge,
-  image,
-  bgColor,
-  rating,
-  slug,
-  index,
-}: ProductCardProps) {
+export default function ProductCard({ data, index = 0, priority = false }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isWishlisted, setIsWishlisted] = useState(false)
+
+  // Swatch interaction state for previewing colours (just visual on card)
+  const [activeColorIdx, setActiveColorIdx] = useState(0)
+
+  // Use second image for hover if available, otherwise fallback to first
+  const primaryImg = data.images[0]
+  const hoverImg = data.images.length > 1 ? data.images[1] : primaryImg
+
+  // Badges logic
+  const isSale = data.compareAtPrice && data.compareAtPrice > data.price
+  const isLowStock = data.stockCount !== undefined && data.stockCount > 0 && data.stockCount <= 3
 
   return (
     <motion.div
@@ -109,195 +53,144 @@ export default function ProductCard({
       viewport={{ once: true, amount: 0.2 }}
       transition={{
         duration: 0.5,
-        delay: index * 0.1,
+        delay: index * 0.05,
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
-      whileHover={{ y: -6 }}
+      className="group relative flex flex-col"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      style={{ cursor: 'pointer' }}
     >
-      <Link href={`/product/${slug}`} style={{ textDecoration: 'none', display: 'block' }}>
-        {/* ── IMAGE AREA ─────────────────────────────────── */}
-        <div
-          style={{
-            backgroundColor: bgColor,
-            borderRadius: 'var(--radius-md)',
-            height: '220px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            overflow: 'hidden',
-            marginBottom: '0.875rem',
-            filter: isHovered ? 'brightness(0.96)' : 'brightness(1)',
-            transition: 'filter 250ms ease',
-          }}
-        >
-          {/* Product image or ivory placeholder — no emoji */}
-          {image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={image}
-              alt={name}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-                transition: 'transform 300ms ease',
-              }}
-            />
-          ) : (
+      <Link href={`/product/${data.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-[var(--radius-sm)]">
+        {/* ── IMAGE AREA ── */}
+        <div className="aspect-square w-full relative overflow-hidden rounded-[var(--radius-sm)] bg-ivory-100 mb-3">
+          {!primaryImg ? (
             <PlaceholderImage />
-          )}
-
-          {/* ── BADGE ────────────────────────────────────── */}
-          {badge && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '0.625rem',
-                left: '0.625rem',
-                backgroundColor:
-                  badge === 'New' ? 'var(--color-dark-900)' : 'var(--color-gold-500)',
-                color: 'white',
-                fontSize: '0.5625rem',
-                letterSpacing: '0.12em',
-                padding: '0.25rem 0.5625rem',
-                borderRadius: 'var(--radius-sm)',
-                textTransform: 'uppercase',
-                fontFamily: 'var(--font-body)',
-                fontWeight: 500,
-              }}
-            >
-              {badge}
-            </div>
-          )}
-
-          {/* ── HOVER ACTION ICONS ───────────────────────── */}
-          <motion.div
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.2 }}
-            style={{
-              position: 'absolute',
-              bottom: '0.625rem',
-              right: '0.625rem',
-              display: 'flex',
-              gap: '0.375rem',
-            }}
-          >
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                setIsWishlisted((prev) => !prev)
-              }}
-              style={{
-                width: '28px',
-                height: '28px',
-                backgroundColor: 'white',
-                border: '0.5px solid var(--color-ivory-400)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                flexShrink: 0,
-              }}
-              aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-            >
-              <Heart
-                size={12}
-                strokeWidth={1.5}
-                fill={isWishlisted ? 'var(--color-gold-500)' : 'none'}
-                color={isWishlisted ? 'var(--color-gold-500)' : 'var(--color-dark-400)'}
+          ) : (
+            <>
+              {/* Primary Image */}
+              <Image
+                src={primaryImg}
+                alt={data.name}
+                fill
+                priority={priority}
+                className={cn(
+                  "object-cover transition-opacity duration-300 ease-out",
+                  isHovered && primaryImg !== hoverImg ? "opacity-0" : "opacity-100"
+                )}
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
               />
-            </button>
-
-            <button
-              onClick={(e) => e.preventDefault()}
-              style={{
-                width: '28px',
-                height: '28px',
-                backgroundColor: 'white',
-                border: '0.5px solid var(--color-ivory-400)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                flexShrink: 0,
-              }}
-              aria-label="Quick view"
-            >
-              <Eye size={12} strokeWidth={1.5} color="var(--color-dark-400)" />
-            </button>
-          </motion.div>
-        </div>
-
-        {/* ── PRODUCT INFO ───────────────────────────────── */}
-        <div>
-          <div
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.8125rem',
-              color: 'var(--color-dark-800)',
-              fontWeight: 500,
-              marginBottom: '0.25rem',
-              letterSpacing: '0.02em',
-            }}
-          >
-            {name}
-          </div>
-
-          <div
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.75rem',
-              color: 'var(--color-dark-400)',
-              marginBottom: '0.625rem',
-            }}
-          >
-            {subtitle}
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-              <span
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '0.9375rem',
-                  color: 'var(--color-dark-900)',
-                  fontWeight: 500,
-                }}
-              >
-                {formatPrice(price)}
-              </span>
-
-              {comparePrice && (
-                <span
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '0.75rem',
-                    color: 'var(--color-dark-200)',
-                    textDecoration: 'line-through',
-                  }}
-                >
-                  {formatPrice(comparePrice)}
-                </span>
+              {/* Hover Image */}
+              {primaryImg !== hoverImg && (
+                <Image
+                  src={hoverImg}
+                  alt={`${data.name} hover view`}
+                  fill
+                  className={cn(
+                    "object-cover transition-transform duration-700 ease-out",
+                    isHovered ? "opacity-100 scale-105" : "opacity-0 scale-100"
+                  )}
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                />
               )}
-            </div>
+            </>
+          )}
 
-            <StarRating rating={rating} />
+          {/* ── BADGES ── */}
+          <div className="absolute top-2 left-2 flex flex-col gap-1.5">
+            {!data.inStock && (
+              <span className="bg-dark-200 text-dark-900 px-2 py-1 rounded-[var(--radius-sm)] font-body text-[0.625rem] tracking-widest uppercase font-500">
+                Out of Stock
+              </span>
+            )}
+            {data.inStock && isLowStock && (
+              <span className="bg-warning text-dark-900 px-2 py-1 rounded-[var(--radius-sm)] font-body text-[0.625rem] tracking-widest uppercase font-500">
+                Only {data.stockCount} left
+              </span>
+            )}
+            {data.inStock && data.isNew && !isLowStock && (
+              <span className="bg-dark-900 text-white px-2 py-1 rounded-[var(--radius-sm)] font-body text-[0.625rem] tracking-widest uppercase font-500">
+                New
+              </span>
+            )}
+            {data.inStock && isSale && (
+              <span className="bg-gold-500 text-dark-900 px-2 py-1 rounded-[var(--radius-sm)] font-body text-[0.625rem] tracking-widest uppercase font-500">
+                Sale
+              </span>
+            )}
           </div>
+
+          {/* ── WISHLIST BUTTON ── */}
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              setIsWishlisted(!isWishlisted)
+            }}
+            aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            className={cn(
+              "absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm transition-transform duration-200 hover:scale-105 outline-none focus-visible:ring-2 focus-visible:ring-gold-500",
+              isHovered || isWishlisted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 lg:opacity-0"
+            )}
+          >
+            <Heart
+              size={14}
+              className={cn(
+                "transition-colors",
+                isWishlisted ? "fill-error text-error" : "text-dark-400 hover:text-dark-900"
+              )}
+            />
+          </button>
         </div>
       </Link>
+
+      {/* ── PRODUCT INFO ── */}
+      <div className="flex flex-col">
+        {/* Swatches (desktop only, shown on hover, or always if you prefer. Design standard is often below image) */}
+        <div className="flex items-center gap-1 mb-2 h-4">
+          {data.colors.map((color, i) => (
+            <button
+              key={color.id}
+              onClick={(e) => {
+                e.preventDefault()
+                setActiveColorIdx(i)
+              }}
+              className={cn(
+                "size-3.5 rounded-full border transition-transform outline-none focus-visible:ring-2 focus-visible:ring-gold-500/50 focus-visible:ring-offset-1",
+                activeColorIdx === i ? "border-dark-400 scale-110" : "border-dark-200 hover:scale-110"
+              )}
+              style={{ backgroundColor: color.hex }}
+              aria-label={`Select ${color.name}`}
+            />
+          ))}
+          {data.colors.length > 3 && (
+            <span className="text-[0.625rem] text-dark-400 font-body ml-1">+{data.colors.length - 3}</span>
+          )}
+        </div>
+
+        <Link href={`/product/${data.slug}`} className="outline-none focus-visible:ring-1 focus-visible:ring-gold-500 rounded-sm">
+          <h3 className="font-body text-sm font-500 text-dark-900 truncate mb-1">
+            {data.name}
+          </h3>
+        </Link>
+        
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-baseline gap-2">
+            <span className="font-body text-sm font-500 text-dark-900">
+              {formatPrice(data.price)}
+            </span>
+            {isSale && (
+              <span className="font-body text-xs text-dark-400 line-through">
+                {formatPrice(data.compareAtPrice!)}
+              </span>
+            )}
+          </div>
+          
+          {/* Rating */}
+          <div className="flex items-center gap-1" aria-label={`Rated ${data.rating} out of 5`}>
+            <span className="font-body text-xs font-500 text-dark-900">{data.rating.toFixed(1)}</span>
+            <span className="text-gold-500 text-[10px]">★</span>
+          </div>
+        </div>
+      </div>
     </motion.div>
   )
 }

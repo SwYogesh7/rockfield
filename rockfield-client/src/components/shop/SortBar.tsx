@@ -18,37 +18,35 @@ interface SortBarProps {
 }
 
 export function SortBar({ resultCount, className }: SortBarProps) {
-  const { filters, setFilter } = useProductFilters()
+  const { sortBy, setFilter } = useProductFilters()
 
   return (
     <div
       className={cn(
         'flex items-center justify-between',
-        'py-4 border-b border-[#e8e2d8]',
+        'py-4 border-b border-ivory-300',
         className
       )}
     >
-      {/* Result count */}
-      <p className="font-jost text-sm text-[#8a8078]">
-        <span className="text-[#1a1410]">{resultCount}</span>{' '}
+      <p className="font-body text-sm text-dark-400">
+        <span className="text-dark-900 font-500">{resultCount}</span>{' '}
         {resultCount === 1 ? 'result' : 'results'}
       </p>
 
-      {/* Sort dropdown */}
       <div className="flex items-center gap-3">
-        <span className="font-jost text-xs text-[#b8b0a8] tracking-wider hidden sm:block">
+        <span className="font-body text-xs text-dark-400 tracking-wider hidden sm:block uppercase">
           Sort
         </span>
         <div className="relative">
           <select
-            value={filters.sortBy}
+            value={sortBy}
             onChange={(e) => setFilter('sortBy', e.target.value)}
             className={cn(
               'appearance-none',
-              'bg-transparent border border-[#d8d2c8] rounded-none',
-              'font-jost text-xs text-[#5a5248] tracking-wider',
+              'bg-transparent border-none',
+              'font-body text-xs text-dark-900 tracking-wider',
               'pl-4 pr-8 py-2',
-              'hover:border-[#b8925a] focus:outline-none focus:border-[#b8925a]',
+              'focus:outline-none hover:text-gold-500',
               'transition-colors duration-200 cursor-pointer'
             )}
           >
@@ -62,12 +60,12 @@ export function SortBar({ resultCount, className }: SortBarProps) {
               </option>
             ))}
           </select>
-          {/* Custom chevron */}
           <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
             <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
               <path
                 d="M1 1L5 5L9 1"
-                stroke="#8a8078"
+                stroke="currentColor"
+                className="text-dark-400"
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"

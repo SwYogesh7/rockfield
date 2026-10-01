@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { ShoppingBag, Search, Heart, Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '@/store/cart'
@@ -10,11 +11,11 @@ import { useIsDesktop } from '@/lib/hooks/useIsDesktop'
 import { Logo } from '@/components/ui/logo'
 
 const navLinks = [
-  { label: 'Men', href: '/shop/men' },
-  { label: 'Women', href: '/shop/women' },
-  { label: 'Kids', href: '/shop/kids' },
   { label: 'Sneakers', href: '/shop/sneakers' },
   { label: 'Boots', href: '/shop/boots' },
+  { label: 'Formal', href: '/shop/formal' },
+  { label: 'Men', href: '/shop?gender=men' },
+  { label: 'Women', href: '/shop?gender=women' },
   { label: 'Sale', href: '/shop?sale=true' },
 ]
 
@@ -40,6 +41,7 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false)
 
   const isDesktop = useIsDesktop()
+  const pathname = usePathname()
 
   const itemCount = useCartStore((state) => state.getItemCount())
   const openCart = useCartStore((state) => state.openCart)
@@ -63,6 +65,9 @@ export default function Navbar() {
     if (isDesktop) setIsMobileOpen(false)
   }, [isDesktop])
 
+  const isHome = pathname === '/'
+  const showSolidBackground = !isHome || isScrolled
+
   return (
     <header
       style={{
@@ -72,8 +77,8 @@ export default function Navbar() {
         right: 0,
         zIndex: 200,
         transition: 'background-color 400ms ease, border-color 400ms ease',
-        backgroundColor: isScrolled ? 'var(--color-ivory-100)' : 'transparent',
-        borderBottom: `0.5px solid ${isScrolled ? 'var(--color-ivory-300)' : 'transparent'}`,
+        backgroundColor: showSolidBackground ? 'var(--color-ivory-100)' : 'transparent',
+        borderBottom: `0.5px solid ${showSolidBackground ? 'var(--color-ivory-300)' : 'transparent'}`,
       }}
     >
       <div className="container-luxury">

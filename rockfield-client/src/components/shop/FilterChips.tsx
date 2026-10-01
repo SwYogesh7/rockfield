@@ -15,16 +15,16 @@ function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
       transition={{ duration: 0.15 }}
       className={cn(
         'flex items-center gap-2',
-        'border border-[#d8d2c8] bg-white px-3 py-1.5',
-        'font-jost text-xs text-[#5a5248] tracking-wider',
-        'hover:border-[#b8925a] transition-colors duration-200'
+        'border border-ivory-300 bg-white px-3 py-1.5 rounded-[var(--radius-sm)]',
+        'font-body text-xs text-dark-900 tracking-wider',
+        'hover:border-gold-500 transition-colors duration-200'
       )}
     >
-      <span>{label}</span>
+      <span className="capitalize">{label}</span>
       <button
         onClick={onRemove}
         aria-label={`Remove ${label} filter`}
-        className="text-[#b8b0a8] hover:text-[#b8925a] transition-colors duration-200 cursor-pointer leading-none"
+        className="text-dark-200 hover:text-gold-500 transition-colors duration-200 cursor-pointer leading-none outline-none focus-visible:ring-1 focus-visible:ring-gold-500 rounded-full size-4 flex items-center justify-center"
       >
         x
       </button>
@@ -33,25 +33,36 @@ function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
 }
 
 export function FilterChips({ className }: { className?: string }) {
-  const { filters, setFilter, clearAll, activeCount } = useProductFilters()
+  const { parsedFilters, setFilter, toggleArrayFilter, clearAll, activeCount } = useProductFilters()
 
   if (activeCount === 0) return null
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2 py-3', className)}>
       <AnimatePresence mode="popLayout">
-        {filters.category && (
-          <Chip
-            key="category"
-            label={`${(filters.category as string).charAt(0).toUpperCase()}${(filters.category as string).slice(1)}`}
-            onRemove={() => setFilter('category', null)}
-          />
+        {parsedFilters.category?.map(cat => (
+          <Chip key={`cat-${cat}`} label={cat} onRemove={() => toggleArrayFilter('category', cat)} />
+        ))}
+        {parsedFilters.gender?.map(g => (
+          <Chip key={`gen-${g}`} label={g} onRemove={() => toggleArrayFilter('gender', g)} />
+        ))}
+        {parsedFilters.colors?.map(c => (
+          <Chip key={`col-${c}`} label={c} onRemove={() => toggleArrayFilter('colors', c)} />
+        ))}
+        {parsedFilters.sizes?.map(s => (
+          <Chip key={`size-${s}`} label={`UK ${s}`} onRemove={() => toggleArrayFilter('sizes', String(s))} />
+        ))}
+        {parsedFilters.material?.map(m => (
+          <Chip key={`mat-${m}`} label={m} onRemove={() => toggleArrayFilter('material', m)} />
+        ))}
+        {parsedFilters.inStockOnly && (
+          <Chip key="instock" label="In Stock Only" onRemove={() => setFilter('inStockOnly', null)} />
         )}
 
-        {(filters.minPrice !== undefined || filters.maxPrice !== undefined) && (
+        {(parsedFilters.minPrice !== undefined || parsedFilters.maxPrice !== undefined) && (
           <Chip
             key="price"
-            label={`₹${((filters.minPrice ?? PRICE_MIN_PAISE) / 100).toLocaleString('en-IN')} – ₹${((filters.maxPrice ?? PRICE_MAX_PAISE) / 100).toLocaleString('en-IN')}`}
+            label={`₹${((parsedFilters.minPrice ?? PRICE_MIN_PAISE) / 100).toLocaleString('en-IN')} – ₹${((parsedFilters.maxPrice ?? PRICE_MAX_PAISE) / 100).toLocaleString('en-IN')}`}
             onRemove={() => {
               setFilter('minPrice', null)
               setFilter('maxPrice', null)
@@ -67,7 +78,7 @@ export function FilterChips({ className }: { className?: string }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={clearAll}
-            className="font-jost text-[10px] tracking-[0.2em] uppercase text-[#b8b0a8] hover:text-[#b8925a] transition-colors duration-200 cursor-pointer ml-1 py-1.5"
+            className="font-body text-[10px] font-500 tracking-[0.2em] uppercase text-dark-400 hover:text-gold-500 transition-colors duration-200 cursor-pointer ml-1 py-1.5 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-sm px-1"
           >
             Clear all
           </motion.button>

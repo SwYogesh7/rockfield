@@ -80,12 +80,13 @@ export interface ProductCardData {
   gender: Gender
   price: number // lowest variant price, paise
   compareAtPrice?: number
-  image: string // primary image URL of first colour
+  images: string[] // 1st is primary, 2nd is hover
   colors: Pick<ProductColor, 'id' | 'name' | 'hex'>[]
   rating: number
   reviewCount: number
   isNew: boolean
   inStock: boolean
+  stockCount?: number // for "Only N left" badge
 }
 
 // ---------- Cart ----------
@@ -107,12 +108,31 @@ export interface CartItem {
 export interface ProductFilters {
   category?: ShoeCategory[]
   gender?: Gender[]
-  colors?: string[] // colour slugs
+  colors?: string[] // colour ids
   sizes?: UkSize[] // matches only sizes that are in stock
   minPrice?: number
   maxPrice?: number
   material?: string[]
   inStockOnly?: boolean
+}
+
+export interface FacetCount {
+  value: string
+  label: string
+  count: number
+}
+
+export interface ColorFacet extends FacetCount {
+  hex: string
+}
+
+export interface ProductFacets {
+  categories: FacetCount[]
+  genders: FacetCount[]
+  colors: ColorFacet[]
+  sizes: FacetCount[]
+  materials: FacetCount[]
+  priceRange: { min: number; max: number }
 }
 
 export type SortOption = 'featured' | 'newest' | 'price-asc' | 'price-desc' | 'rating'
