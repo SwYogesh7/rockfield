@@ -1,5 +1,7 @@
+// src/components/ui/input.tsx
+// Rockfield input — warm ivory bg, gold focus ring, 1px dark border.
+// Compatible with React Hook Form + aria-invalid error states.
 import * as React from 'react'
-
 import { cn } from '@/lib/utils'
 
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
@@ -8,7 +10,20 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
       type={type}
       data-slot="input"
       className={cn(
-        'h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
+        // Layout
+        'h-10 w-full min-w-0 px-3 py-2',
+        // Typography — Jost body, never display font in form fields
+        'font-body text-sm text-dark-900 placeholder:text-dark-200',
+        // Surface
+        'rounded-[var(--radius-sm)] border border-dark-200 bg-ivory-50',
+        // Transition
+        'transition-[border-color,box-shadow] duration-200 ease-out',
+        // Focus — gold ring matching global :focus-visible
+        'outline-none focus-visible:border-gold-500 focus-visible:ring-2 focus-visible:ring-gold-500/30',
+        // Disabled
+        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-40',
+        // Error state (react-hook-form sets aria-invalid)
+        'aria-invalid:border-error aria-invalid:ring-2 aria-invalid:ring-error/20',
         className
       )}
       {...props}

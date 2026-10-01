@@ -22,9 +22,14 @@
 
   --color-gold-300: #d4aa72; /* light gold, hover states */
   --color-gold-400: #c9a55a; /* main gold — most used */
-  --color-gold-500: #b8925a; /* primary gold — buttons */
+  --color-gold-500: #b8925a; /* primary gold — accent, borders, icons */
   --color-gold-600: #a07848; /* dark gold — hover on buttons */
-  --color-gold-700: #7a5c2e; /* darkest gold — text on light */
+  --color-gold-700: #7a5c2e; /* darkest gold — base for gold-text */
+
+  /* gold-text: use ONLY for small text/links on ivory backgrounds.
+     Contrast on ivory-100 (#faf8f4): ~5.85:1 — WCAG AA ✅
+     Do NOT use gold-500 (#b8925a) for text — it fails AA at ~2.6:1. */
+  --color-gold-text: #7a5c2e;
 
   --color-dark-900: #1a1410; /* almost black — headings */
   --color-dark-800: #2a2018; /* dark body text */
@@ -33,14 +38,17 @@
   --color-dark-200: #b0a898; /* very muted — captions */
 
   /* ── SEMANTIC COLOURS ───────────────────
-     These are for feedback states —
-     success (green), error (red), etc.
-     We keep these separate from brand.
+     Warm-toned feedback — forest green,
+     warm red, amber — not cold defaults.
+     Surface variants for alert backgrounds.
   ─────────────────────────────────────── */
 
-  --color-success: #2d6a2d;
-  --color-error: #a32d2d;
-  --color-warning: #8a5a00;
+  --color-success: #2d6a2d;       /* text/icon on light bg */
+  --color-success-bg: #eef5ee;    /* alert surface */
+  --color-error: #a32d2d;         /* text/icon on light bg */
+  --color-error-bg: #f9eded;      /* alert surface */
+  --color-warning: #8a5a00;       /* text/icon on light bg */
+  --color-warning-bg: #fdf4e3;    /* alert surface */
 
   /* ── TYPOGRAPHY ─────────────────────────
      Two fonts only — luxury brands never
@@ -326,8 +334,13 @@ button {
 ───────────────────────────────────────── */
 
 :focus-visible {
+  /* Gold ring — 2px, offset so it clears the element edge.
+     gold-500 is fine here: this is a UI accent (not text), so AA
+     contrast rules for text don't apply. Keyboard users see it clearly
+     against both ivory and dark backgrounds. */
   outline: 2px solid var(--color-gold-500);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -445,3 +458,174 @@ button {
   border: none;
   cursor: pointer;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   TYPE SCALE UTILITIES
+   One consistent scale — use these classes, not ad-hoc sizes.
+
+   Rules:
+   • Cormorant Garamond (font-display) only at >= 24px, weight 500-600
+   • Jost (font-body) for everything smaller
+   • Labels: uppercase + letter-spacing always
+   • Never use gold-500 as text colour — use gold-text instead
+────────────────────────────────────────────────────────────── */
+
+/* Display — hero headlines, editorial splashes (48px+) */
+.type-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--color-dark-900);
+}
+
+/* H1 — page titles (48px) */
+.type-h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--color-dark-900);
+}
+
+/* H2 — section titles (36px) */
+.type-h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--color-dark-900);
+}
+
+/* H3 — subsection titles (30px) */
+.type-h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-dark-900);
+}
+
+/* H4 — card headings, smallest display font usage (24px) */
+.type-h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-dark-900);
+}
+
+/* Body — default paragraph text (16px) */
+.type-body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--color-dark-700);
+}
+
+/* Small — captions, helper text (14px) */
+.type-small {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-dark-400);
+}
+
+/* Label — nav, buttons, badges (11px uppercase tracked) */
+.type-label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-dark-700);
+}
+
+/* Eyebrow — section intro label (10px) */
+.type-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-gold-text);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   IMAGE ASPECT RATIO UTILITIES
+   All product images use fixed ratios.
+
+   aspect-shoe-card  1:1  PLP grid cards
+   aspect-hero       16:9 desktop hero
+   aspect-portrait   4:5  mobile hero
+────────────────────────────────────────────────────────────── */
+
+.aspect-shoe-card {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.aspect-hero {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  position: relative;
+}
+
+.aspect-portrait {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  position: relative;
+}
+
+.aspect-shoe-card > *,
+.aspect-hero > *,
+.aspect-portrait > * {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOTION UTILITIES
+────────────────────────────────────────────────────────────── */
+
+.transition-base {
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+
+.transition-slow {
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Global reduced-motion override — collapses all animation */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SEMANTIC COLOUR UTILITIES
+────────────────────────────────────────────────────────────── */
+
+.text-success { color: var(--color-success); }
+.text-error   { color: var(--color-error); }
+.text-warning { color: var(--color-warning); }
+.text-gold    { color: var(--color-gold-text); }
+
+.bg-success-surface { background-color: var(--color-success-bg); }
+.bg-error-surface   { background-color: var(--color-error-bg); }
+.bg-warning-surface { background-color: var(--color-warning-bg); }

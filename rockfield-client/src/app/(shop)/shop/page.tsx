@@ -65,7 +65,7 @@ function ShopPageContent() {
               <Sheet>
                 <SheetTrigger asChild>
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     className="text-xs tracking-widest uppercase rounded-none bg-transparent"
                   >
                     Filters {activeCount > 0 && `(${activeCount})`}

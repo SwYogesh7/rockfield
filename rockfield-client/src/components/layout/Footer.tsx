@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { footerLinks, socialLinks } from '@/lib/footer-data'
 import { SocialIcon } from '@/components/ui/SocialIcon'
+import { Logo } from '@/components/ui/logo'
 
 // ✅ Fix 1: "as const" on the ease array — tells TypeScript this is a
 // fixed bezier tuple, satisfying Framer Motion v12's stricter types
@@ -107,9 +108,7 @@ export function Footer() {
           {/* ── Column 1: Brand ── */}
           <motion.div variants={itemVariants} className="lg:col-span-1">
             <Link href="/" className="inline-block mb-6">
-              <span className="font-display text-2xl font-light tracking-[0.35em] text-white uppercase">
-                Rockfield
-              </span>
+              <Logo className="text-2xl font-light text-white" />
             </Link>
 
             <p className="font-jost text-sm leading-relaxed text-white/40 mb-8 max-w-55">

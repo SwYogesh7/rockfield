@@ -1,9 +1,17 @@
 // src/app/providers.tsx
 'use client'
-// Root providers — add global client-side providers here.
-// Lenis is NOT here; it lives in LenisProvider and is used on the homepage only.
+// Root client providers.
+// Lenis is NOT here — it lives in LenisProvider and is used on the homepage only.
 // See src/components/layout/LenisProvider.tsx
 
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { Toaster } from '@/components/ui/sonner'
+
 export default function Providers({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <TooltipProvider>
+      {children}
+      <Toaster />
+    </TooltipProvider>
+  )
 }

@@ -1,50 +1,112 @@
+// src/components/ui/button.tsx
+// Rockfield button variants built on top of the shadcn cva base.
+//
+// Variant usage guide:
+//   primary   → dark fill + ivory text. Gold on hover. Main CTA. (default)
+//   secondary → 1px dark outline, transparent bg. Secondary actions.
+//   ghost     → No border, subtle ivory hover. Nav / icon triggers.
+//   gold      → Gold fill + dark text. Use SPARINGLY — promo, sale badges only.
+//   link      → Underline style. Inline text links.
+//   destructive → Warm red. Destructive confirm actions only.
+//
+// Size guide:
+//   sm  → 32px tall — inline / compact UI
+//   md  → 40px tall — default
+//   lg  → 48px tall — hero / primary CTA
+//   icon → 40×40 square — icon-only buttons
+
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { Slot } from 'radix-ui'
-
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  // ── BASE ─────────────────────────────────────────────────────
+  // Shared across all variants. No colours here — variants own those.
+  [
+    'inline-flex shrink-0 items-center justify-center gap-2',
+    'font-body font-medium whitespace-nowrap select-none',
+    'text-[0.6875rem] tracking-[0.2em] uppercase', // type-label
+    'border transition-all',
+    'outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2',
+    'disabled:pointer-events-none disabled:opacity-40',
+    'active:translate-y-px',
+    '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:size-3.5',
+  ],
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/80',
-        outline:
-          'border-border bg-background shadow-xs hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
-        secondary:
-          'bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground',
-        ghost:
-          'hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50',
-        destructive:
-          'bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40',
-        link: 'text-primary underline-offset-4 hover:underline',
+        // ── PRIMARY — the main CTA
+        // Dark fill, ivory text. Hover shifts fill to gold.
+        primary: [
+          'bg-dark-900 text-ivory-100 border-dark-900',
+          'hover:bg-gold-500 hover:border-gold-500',
+          'duration-[250ms] ease-out',
+        ],
+
+        // ── SECONDARY — less prominent actions
+        // 1px dark outline, transparent bg. Hover fills with ivory-200.
+        secondary: [
+          'bg-transparent text-dark-900 border-dark-800',
+          'hover:bg-ivory-200 hover:border-dark-900',
+          'duration-[200ms] ease-out',
+        ],
+
+        // ── GHOST — minimal, used in nav / overlays
+        // No border visible at rest. Subtle ivory hover.
+        ghost: [
+          'bg-transparent text-dark-700 border-transparent',
+          'hover:bg-ivory-200 hover:text-dark-900',
+          'duration-[200ms] ease-out',
+        ],
+
+        // ── GOLD — gold fill + dark text.
+        // Use sparingly: promo banners, sale badges, special CTAs.
+        // Never on a gold background — only on ivory or dark.
+        gold: [
+          'bg-gold-500 text-dark-900 border-gold-500',
+          'hover:bg-gold-600 hover:border-gold-600',
+          'duration-[250ms] ease-out',
+        ],
+
+        // ── LINK — inline text link style
+        link: [
+          'bg-transparent border-transparent text-[--color-gold-text]',
+          'underline underline-offset-4 hover:opacity-70',
+          'tracking-normal uppercase-none font-normal text-sm',
+          'duration-[150ms]',
+        ],
+
+        // ── DESTRUCTIVE — warm red for dangerous actions
+        destructive: [
+          'bg-error/10 text-error border-error/20',
+          'hover:bg-error/20',
+          'duration-[200ms] ease-out',
+        ],
       },
+
       size: {
-        default:
-          'h-9 gap-1.5 px-2.5 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),8px)] px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: 'h-8 gap-1 rounded-[min(var(--radius-md),10px)] px-2.5 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5',
-        lg: 'h-10 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
-        icon: 'size-9',
-        'icon-xs':
-          "size-6 rounded-[min(var(--radius-md),8px)] in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
-        'icon-sm':
-          'size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md',
-        'icon-lg': 'size-10',
+        sm: 'h-8 px-3 rounded-[var(--radius-sm)]',
+        md: 'h-10 px-5 rounded-[var(--radius-sm)]',
+        lg: 'h-12 px-7 rounded-[var(--radius-sm)]',
+        icon: 'size-10 rounded-[var(--radius-sm)]',
+        'icon-sm': 'size-8 rounded-[var(--radius-sm)]',
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: 'primary',
+      size: 'md',
     },
   }
 )
 
+export type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>['variant']>
+export type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>
+
 function Button({
   className,
-  variant = 'default',
-  size = 'default',
+  variant = 'primary',
+  size = 'md',
   asChild = false,
   ...props
 }: React.ComponentProps<'button'> &

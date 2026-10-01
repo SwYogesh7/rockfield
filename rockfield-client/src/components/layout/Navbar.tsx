@@ -7,6 +7,7 @@ import { ShoppingBag, Search, Heart, Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '@/store/cart'
 import { useIsDesktop } from '@/lib/hooks/useIsDesktop'
+import { Logo } from '@/components/ui/logo'
 
 const navLinks = [
   { label: 'Men', href: '/shop/men' },
@@ -46,6 +47,7 @@ export default function Navbar() {
   const displayCount = mounted ? itemCount : 0
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
 
@@ -89,10 +91,6 @@ export default function Navbar() {
           <Link
             href="/"
             style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: isDesktop ? '1.375rem' : '1.125rem',
-              letterSpacing: '0.35em',
-              color: 'var(--color-dark-900)',
               textDecoration: 'none',
               flexShrink: 0,
               transition: 'color 250ms ease, font-size 300ms ease',
@@ -100,7 +98,13 @@ export default function Navbar() {
             onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-gold-500)')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-dark-900)')}
           >
-            ROCKFIELD
+            <Logo
+              style={{
+                fontSize: isDesktop ? '1.375rem' : '1.125rem',
+                color: 'inherit',
+                transition: 'font-size 300ms ease',
+              }}
+            />
           </Link>
 
           {/* ── DESKTOP NAV — only rendered on desktop ── */}
