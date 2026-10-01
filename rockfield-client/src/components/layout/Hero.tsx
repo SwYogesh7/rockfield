@@ -29,6 +29,46 @@ const imagePanelVariants = {
   },
 }
 
+// ─────────────────────────────────────────────────────────────
+// Ivory placeholder panel — neutral warm rectangle.
+// No emoji. Same aspect ratio maintained as the real image will be.
+// ─────────────────────────────────────────────────────────────
+function ImagePlaceholder({
+  bg = 'var(--color-ivory-300)',
+  label,
+}: {
+  bg?: string
+  label?: string
+}) {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: bg,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+      }}
+    >
+      {label && (
+        <span
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: '0.625rem',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'var(--color-dark-400)',
+          }}
+        >
+          {label}
+        </span>
+      )}
+    </div>
+  )
+}
+
 export default function Hero() {
   const isDesktop = useIsDesktop()
 
@@ -40,11 +80,9 @@ export default function Hero() {
         backgroundColor: 'var(--color-ivory-100)',
         display: 'flex',
         alignItems: 'stretch',
-        // stretch = both columns fill full height
       }}
     >
       {/* ── OUTER GRID — full width, no container ── */}
-      {/* The container is NOT here — each column manages its own spacing */}
       <div
         style={{
           display: 'grid',
@@ -53,8 +91,7 @@ export default function Hero() {
           minHeight: '100vh',
         }}
       >
-        {/* ── LEFT COLUMN — has container padding ── */}
-        {/* container-luxury gives it the left margin + max readable width */}
+        {/* ── LEFT COLUMN — text content ── */}
         <div
           style={{
             paddingLeft: isDesktop ? '5vw' : '1.5rem',
@@ -63,10 +100,8 @@ export default function Hero() {
             paddingBottom: '4rem',
             display: 'flex',
             alignItems: 'flex-start',
-            // Constrain text width for readability
             maxWidth: isDesktop ? '680px' : '100%',
             marginLeft: isDesktop ? 'auto' : '0',
-            // auto margin pushes left column toward center on very wide screens
           }}
         >
           <motion.div
@@ -100,7 +135,7 @@ export default function Hero() {
                   flexShrink: 0,
                 }}
               />
-              <span className="eyebrow">New Collection — SS 2026</span>
+              <span className="eyebrow">New Season — SS 2026</span>
             </motion.div>
 
             {/* Heading */}
@@ -115,10 +150,10 @@ export default function Hero() {
                 marginBottom: '1.5rem',
               }}
             >
-              Draped in{' '}
-              <em style={{ fontStyle: 'italic', color: 'var(--color-gold-500)' }}>Morning</em>
+              Crafted for{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--color-gold-500)' }}>the Long</em>
               <br />
-              Light
+              Walk
             </motion.h1>
 
             {/* Description */}
@@ -133,8 +168,8 @@ export default function Hero() {
                 marginBottom: '2.5rem',
               }}
             >
-              Where heritage craft meets ivory silence. Each piece woven from rare textiles — made
-              to outlast the season and the trends.
+              Premium footwear built for every road. Sneakers, boots, and everyday shoes — crafted
+              with care, sized for India.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -148,8 +183,8 @@ export default function Hero() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.625rem',
-                  backgroundColor: 'var(--color-gold-500)',
-                  color: 'white',
+                  backgroundColor: 'var(--color-dark-900)',
+                  color: 'var(--color-ivory-100)',
                   padding: '0.75rem 1.75rem',
                   fontSize: '0.6875rem',
                   letterSpacing: '0.2em',
@@ -162,18 +197,18 @@ export default function Hero() {
                   whiteSpace: 'nowrap',
                 }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = 'var(--color-gold-600)')
-                }
-                onMouseLeave={(e) =>
                   (e.currentTarget.style.backgroundColor = 'var(--color-gold-500)')
                 }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = 'var(--color-dark-900)')
+                }
               >
-                Explore Collection
+                Shop Now
                 <ArrowRight size={14} strokeWidth={1.5} />
               </Link>
 
               <Link
-                href="/collections"
+                href="/shop?sort=newest"
                 style={{
                   color: 'var(--color-dark-700)',
                   fontSize: '0.6875rem',
@@ -195,7 +230,7 @@ export default function Hero() {
                   e.currentTarget.style.borderBottomColor = 'var(--color-dark-400)'
                 }}
               >
-                View Lookbook
+                New Arrivals
               </Link>
             </motion.div>
 
@@ -213,9 +248,9 @@ export default function Hero() {
               }}
             >
               {[
-                { value: '2,400+', label: 'Happy customers' },
-                { value: '100%', label: 'Ethically sourced' },
-                { value: 'Free', label: 'Returns & exchanges' },
+                { value: 'Free', label: 'Size exchange' },
+                { value: 'COD', label: 'Available' },
+                { value: '100%', label: 'Genuine products' },
               ].map((stat) => (
                 <div key={stat.label}>
                   <div
@@ -246,7 +281,7 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* ── RIGHT COLUMN — NO padding, goes edge to edge ── */}
+        {/* ── RIGHT COLUMN — image panels, no emoji ── */}
         {isDesktop && (
           <motion.div
             variants={imagePanelVariants}
@@ -258,46 +293,18 @@ export default function Hero() {
               gridTemplateColumns: '1fr 1fr',
               gridTemplateRows: '1fr 1fr',
               gap: '1px',
-              // backgroundColor: 'var(--color-ivory-300)',  // ← was 100vh, now accounts for navbar
               paddingTop: '5rem',
             }}
           >
-            {/* Large card — spans both rows */}
+            {/* Large panel — spans both rows */}
             <div
               style={{
                 gridRow: 'span 2',
-                backgroundColor: 'var(--color-ivory-300)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 position: 'relative',
                 overflow: 'hidden',
               }}
             >
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '6rem', marginBottom: '0.75rem' }}>👗</div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '0.6875rem',
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                    color: 'var(--color-dark-400)',
-                  }}
-                >
-                  Silk Drape
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '1.125rem',
-                    color: 'var(--color-gold-500)',
-                    marginTop: '0.375rem',
-                  }}
-                >
-                  ₹14,900
-                </div>
-              </div>
+              <ImagePlaceholder bg="var(--color-ivory-300)" label="Hero image" />
               <div
                 style={{
                   position: 'absolute',
@@ -322,31 +329,11 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Small card 1 */}
-            <div
-              style={{
-                backgroundColor: 'var(--color-ivory-200)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '2.5rem',
-              }}
-            >
-              🧥
-            </div>
+            {/* Small panel 1 */}
+            <ImagePlaceholder bg="var(--color-ivory-200)" />
 
-            {/* Small card 2 */}
-            <div
-              style={{
-                backgroundColor: '#ddd6c8',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '2.5rem',
-              }}
-            >
-              👖
-            </div>
+            {/* Small panel 2 */}
+            <ImagePlaceholder bg="#ddd6c8" />
           </motion.div>
         )}
       </div>

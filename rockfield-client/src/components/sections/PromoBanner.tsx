@@ -63,7 +63,7 @@ export default function PromoBanner() {
                 marginBottom: '0.75rem',
               }}
             >
-              Atelier Private Sale
+              Limited Time Offer
             </div>
 
             {/* Banner heading */}
@@ -84,9 +84,9 @@ export default function PromoBanner() {
                   color: 'var(--color-gold-500)',
                 }}
               >
-                Heritage
+                Season
               </em>{' '}
-              Edit
+              Sale
             </h3>
 
             {/* Subtitle */}
@@ -95,18 +95,16 @@ export default function PromoBanner() {
                 fontFamily: 'var(--font-body)',
                 fontSize: '0.8125rem',
                 color: 'rgba(255, 255, 255, 0.45)',
-                // rgba with opacity — more elegant than a grey hex
-                // because it works on any background colour
                 lineHeight: 1.6,
                 marginBottom: '1.75rem',
               }}
             >
-              Curated archive pieces · Limited quantities · Final sale
+              Select sneakers, boots, and casuals · Limited stock · Final prices
             </p>
 
             {/* CTA Button */}
             <Link
-              href="/collections/heritage-sale"
+              href="/shop?sale=true"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -131,7 +129,7 @@ export default function PromoBanner() {
                 (e.currentTarget.style.backgroundColor = 'var(--color-gold-500)')
               }
             >
-              Explore Sale
+              Shop Sale
               <ArrowRight size={13} strokeWidth={1.5} />
             </Link>
           </div>

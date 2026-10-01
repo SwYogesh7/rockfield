@@ -1,17 +1,17 @@
 // src/lib/fonts.ts
-import { Barlow_Condensed, Inter } from 'next/font/google'
+import { Cormorant_Garamond, Jost } from 'next/font/google'
 
-/** Barlow Condensed — bold condensed display font for headings and brand name */
-export const barlowCondensed = Barlow_Condensed({
+/** Cormorant Garamond — elegant serif for display headings and brand wordmark */
+export const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['300', '400', '500', '600'],
   style: ['normal', 'italic'],
   display: 'swap',
   variable: '--font-display',
 })
 
-/** Inter — clean geometric sans for body text, nav, labels, prices */
-export const inter = Inter({
+/** Jost — geometric sans-serif for body text, nav, labels, buttons, prices */
+export const jost = Jost({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
   display: 'swap',

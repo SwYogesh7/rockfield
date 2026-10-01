@@ -1,25 +1,20 @@
 // src/app/page.tsx
 // No 'use client' — this is a Server Component (ISR)
-// It renders on the server and is cached at the edge
+// LenisProvider wraps homepage content only — not the root layout.
 
 import Hero from '@/components/layout/Hero'
 import Marquee from '@/components/layout/Marquee'
 import NewArrivals from '@/components/sections/NewArrivals'
 import PromoBanner from '@/components/sections/PromoBanner'
+import { LenisProvider } from '@/components/layout/LenisProvider'
 
 export default function HomePage() {
   return (
-    // pt-0 because Hero handles its own top padding for the navbar
-    <div>
+    <LenisProvider>
       <Hero />
       <Marquee />
       <NewArrivals />
       <PromoBanner />
-      {/* We add more sections here in the next steps:
-          - Marquee ticker
-          - Featured products
-          - Promotional banner
-      */}
-    </div>
+    </LenisProvider>
   )
 }

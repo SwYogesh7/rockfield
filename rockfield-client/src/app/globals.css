@@ -1,14 +1,14 @@
 @import 'tailwindcss';
 
 /* ─────────────────────────────────────────
-   AURUM — Luxury Design Tokens
+   Rockfield — Luxury Design Tokens
    These variables power the ENTIRE app.
    Change a value here = changes everywhere.
 ───────────────────────────────────────── */
 
 @theme {
   /* ── BRAND COLOURS ──────────────────────
-     These are the core AURUM palette.
+     These are the core Rockfield palette.
      Ivory = background feel (warm white)
      Gold  = accent, buttons, highlights
      Dark  = text, navbar, footer

@@ -4,7 +4,7 @@
 export const SITE_NAME = 'Rockfield'
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://rockfieldshoes.in'
 export const SITE_DESCRIPTION =
-  'Rockfield — Built for the road. Sneakers, boots, and everyday footwear for men, women, and kids.'
+  'Rockfield — Crafted for the long walk. Premium footwear for men, women, and kids across India.'
 
 /** Paise per rupee */
 export const PAISE_PER_RUPEE = 100

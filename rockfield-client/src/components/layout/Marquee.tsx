@@ -10,11 +10,11 @@
 // ─────────────────────────────────────────────────────────────
 const marqueeItems = [
   'Free shipping on orders above ₹5,000',
-  'Heritage textiles — ethically sourced',
+  'Free size exchange — always',
   'New arrivals every Thursday',
-  'Complimentary gift wrapping',
-  'Free returns within 15 days',
-  'Crafted for the considered wardrobe',
+  'COD available across India',
+  'UK sizing with Indian half sizes',
+  'Crafted for the long walk',
 ]
 
 // The gold dot separator between items

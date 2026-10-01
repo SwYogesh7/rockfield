@@ -1,7 +1,8 @@
 // src/app/providers.tsx
 'use client'
-// Providers wraps the app. Add global client-side providers here.
-// Lenis removed (not approved). Add back only if approved in future phases.
+// Root providers — add global client-side providers here.
+// Lenis is NOT here; it lives in LenisProvider and is used on the homepage only.
+// See src/components/layout/LenisProvider.tsx
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return <>{children}</>

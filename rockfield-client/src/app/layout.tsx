@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next'
-import { barlowCondensed, inter } from '@/lib/fonts'
+import { cormorantGaramond, jost } from '@/lib/fonts'
 import Providers from './providers'
 import Navbar from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -8,12 +8,12 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Rockfield — Built for the Road',
+    default: 'Rockfield — Crafted for the Long Walk',
     template: '%s | Rockfield',
   },
   description:
-    'Rockfield — Sneakers, boots, and everyday footwear built for the road. ' +
-    'Shop men, women, and kids shoes with fast delivery across India.',
+    'Rockfield — Crafted for the long walk. Sneakers, boots, and everyday footwear ' +
+    'for men, women, and kids. Free delivery across India.',
   keywords: ['shoes', 'sneakers', 'boots', 'footwear', 'Rockfield', 'India'],
   metadataBase: new URL('https://rockfieldshoes.in'),
   openGraph: {
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     url: 'https://rockfieldshoes.in',
     siteName: 'Rockfield',
-    title: 'Rockfield — Built for the Road',
-    description: 'Sneakers, boots, and everyday footwear built for the road.',
+    title: 'Rockfield — Crafted for the Long Walk',
+    description: 'Crafted for the long walk. Premium footwear for every road.',
     images: [
       {
         url: '/og-image.jpg',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${barlowCondensed.variable} ${inter.variable}`}>
+    <html lang="en" className={`${cormorantGaramond.variable} ${jost.variable}`} data-scroll-behavior="smooth">
       <body className="antialiased min-h-screen">
         <Providers>
           <Navbar />

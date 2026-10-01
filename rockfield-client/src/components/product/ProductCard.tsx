@@ -15,30 +15,30 @@ import { motion } from 'framer-motion'
 interface ProductCardProps {
   name: string
   subtitle: string // e.g. "3 colours"
-  price: number
+  price: number // paise — formatted at display
   comparePrice: number | null // original price if on sale
   badge: string | null // "New", "-20%", or null
   image?: string // product image URL
-  emoji?: string // fallback placeholder
-  bgColor: string // card image background colour
+  bgColor: string // card image background colour (ivory shade)
   rating: number // 1–5
   slug: string // URL: /product/terrain-runner-pro
   index: number // position in grid — used for stagger delay
 }
 
 // ─────────────────────────────────────────────────────────────
-// HELPER: FORMAT PRICE
-// Converts 18500 → "₹18,500"
-// toLocaleString('en-IN') formats with Indian number system:
-// 18500 → 18,500 (not 18.500 which is European style)
+// HELPER: FORMAT PRICE (paise → ₹)
 // ─────────────────────────────────────────────────────────────
-function formatPrice(amount: number): string {
-  return `₹${amount.toLocaleString('en-IN')}`
+function formatPrice(paise: number): string {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(paise / 100)
 }
 
 // ─────────────────────────────────────────────────────────────
 // HELPER: STAR RATING
-// Renders 5 stars — filled gold up to rating, empty after
 // ─────────────────────────────────────────────────────────────
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -48,7 +48,6 @@ function StarRating({ rating }: { rating: number }) {
           key={star}
           style={{
             fontSize: '11px',
-            // Ternary: if star number ≤ rating → gold, else light grey
             color: star <= rating ? 'var(--color-gold-500)' : 'var(--color-ivory-400)',
           }}
         >
@@ -59,50 +58,65 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
+// ─────────────────────────────────────────────────────────────
+// IMAGE PLACEHOLDER — ivory rectangle, no emoji
+// Shown when no image URL is provided.
+// ─────────────────────────────────────────────────────────────
+function PlaceholderImage() {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'var(--color-ivory-300)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <div
+        style={{
+          width: '40%',
+          height: '40%',
+          backgroundColor: 'var(--color-ivory-400)',
+          borderRadius: '2px',
+          opacity: 0.5,
+        }}
+      />
+    </div>
+  )
+}
+
 export default function ProductCard({
   name,
   subtitle,
   price,
   comparePrice,
   badge,
-  emoji,
   image,
   bgColor,
   rating,
   slug,
   index,
 }: ProductCardProps) {
-  // isHovered — controls image background and action icon visibility
   const [isHovered, setIsHovered] = useState(false)
-
-  // isWishlisted — toggles heart icon fill
   const [isWishlisted, setIsWishlisted] = useState(false)
 
   return (
-    // motion.div gives us:
-    // 1. whileHover={{ y: -6 }} — card lifts 6px on hover
-    // 2. onHoverStart/End — updates isHovered state
-    // 3. initial/animate — stagger entrance animation
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{
         duration: 0.5,
-        // Each card delays by 0.1s × its position in the grid
-        // Card 0: 0ms, Card 1: 100ms, Card 2: 200ms, Card 3: 300ms
-        // This creates a smooth left-to-right cascade effect
         delay: index * 0.1,
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
       whileHover={{ y: -6 }}
-      // whileHover applies directly as an animation — cleaner than
-      // managing translateY through useState + inline style
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       style={{ cursor: 'pointer' }}
     >
-      {/* Link wraps the entire card — clicking anywhere navigates */}
       <Link href={`/product/${slug}`} style={{ textDecoration: 'none', display: 'block' }}>
         {/* ── IMAGE AREA ─────────────────────────────────── */}
         <div
@@ -116,13 +130,11 @@ export default function ProductCard({
             position: 'relative',
             overflow: 'hidden',
             marginBottom: '0.875rem',
-            // filter: brightness — darkens card on hover slightly
-            // This is more reliable than computing a darker hex colour
             filter: isHovered ? 'brightness(0.96)' : 'brightness(1)',
             transition: 'filter 250ms ease',
           }}
         >
-          {/* Product image or emoji placeholder */}
+          {/* Product image or ivory placeholder — no emoji */}
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -137,27 +149,16 @@ export default function ProductCard({
               }}
             />
           ) : (
-            <span
-              style={{
-                fontSize: '3.5rem',
-                transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-                transition: 'transform 300ms ease',
-                display: 'block',
-              }}
-            >
-              {emoji}
-            </span>
+            <PlaceholderImage />
           )}
 
           {/* ── BADGE ────────────────────────────────────── */}
-          {/* badge && ... = only render if badge is not null */}
           {badge && (
             <div
               style={{
                 position: 'absolute',
                 top: '0.625rem',
                 left: '0.625rem',
-                // "New" badge = dark background, sale badge = gold
                 backgroundColor:
                   badge === 'New' ? 'var(--color-dark-900)' : 'var(--color-gold-500)',
                 color: 'white',
@@ -175,8 +176,6 @@ export default function ProductCard({
           )}
 
           {/* ── HOVER ACTION ICONS ───────────────────────── */}
-          {/* These appear only when isHovered = true */}
-          {/* opacity animates from 0 → 1 smoothly */}
           <motion.div
             animate={{ opacity: isHovered ? 1 : 0 }}
             transition={{ duration: 0.2 }}
@@ -188,9 +187,6 @@ export default function ProductCard({
               gap: '0.375rem',
             }}
           >
-            {/* Wishlist button */}
-            {/* e.preventDefault() stops the Link from navigating */}
-            {/* when user clicks the heart — they're just wishlisting */}
             <button
               onClick={(e) => {
                 e.preventDefault()
@@ -213,13 +209,11 @@ export default function ProductCard({
               <Heart
                 size={12}
                 strokeWidth={1.5}
-                // fill changes based on wishlist state
                 fill={isWishlisted ? 'var(--color-gold-500)' : 'none'}
                 color={isWishlisted ? 'var(--color-gold-500)' : 'var(--color-dark-400)'}
               />
             </button>
 
-            {/* Quick view button */}
             <button
               onClick={(e) => e.preventDefault()}
               style={{
@@ -243,7 +237,6 @@ export default function ProductCard({
 
         {/* ── PRODUCT INFO ───────────────────────────────── */}
         <div>
-          {/* Product name */}
           <div
             style={{
               fontFamily: 'var(--font-body)',
@@ -257,7 +250,6 @@ export default function ProductCard({
             {name}
           </div>
 
-          {/* Subtitle — material and colour count */}
           <div
             style={{
               fontFamily: 'var(--font-body)',
@@ -269,7 +261,6 @@ export default function ProductCard({
             {subtitle}
           </div>
 
-          {/* Price row */}
           <div
             style={{
               display: 'flex',
@@ -277,7 +268,6 @@ export default function ProductCard({
               justifyContent: 'space-between',
             }}
           >
-            {/* Prices */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
               <span
                 style={{
@@ -290,7 +280,6 @@ export default function ProductCard({
                 {formatPrice(price)}
               </span>
 
-              {/* Original price — only shows if comparePrice exists */}
               {comparePrice && (
                 <span
                   style={{
@@ -305,7 +294,6 @@ export default function ProductCard({
               )}
             </div>
 
-            {/* Star rating */}
             <StarRating rating={rating} />
           </div>
         </div>

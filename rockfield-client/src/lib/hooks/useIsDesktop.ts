@@ -3,18 +3,17 @@
 import { useState, useEffect } from 'react'
 
 // Named export — imported as { useIsDesktop }
-// Convention: hooks are always named exports, not default exports
 export function useIsDesktop(breakpoint = 1024) {
+  // Always false on server — matches SSR output, prevents hydration mismatch.
+  // useEffect runs only after hydration, so the first client render matches server.
   const [isDesktop, setIsDesktop] = useState(false)
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
     const check = () => setIsDesktop(window.innerWidth >= breakpoint)
-    check()
+    check() // Set correct value after hydration
     window.addEventListener('resize', check, { passive: true })
     return () => window.removeEventListener('resize', check)
   }, [breakpoint])
 
-  return mounted ? isDesktop : false
+  return isDesktop
 }

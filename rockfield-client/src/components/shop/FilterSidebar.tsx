@@ -5,20 +5,6 @@ import { PRICE_MIN_PAISE, PRICE_MAX_PAISE } from '@/constants'
 import { CATEGORIES as SHOE_CATEGORIES, UK_SIZES } from '@/types'
 import { cn } from '@/lib/utils'
 
-// ─────────────────────────────────────────────────────────────
-// DESIGN TOKENS (local — matches your brand reference)
-// ─────────────────────────────────────────────────────────────
-const T = {
-  gold: '#b8925a',
-  goldLight: '#f7f1e8',
-  text: '#1a1410',
-  textMuted: '#8a8078',
-  textFaint: '#b8b0a8',
-  border: '#e8e2d8',
-  borderHover: '#c8c0b4',
-  bg: '#faf8f4',
-  bgHover: '#f3ede3',
-} as const
 
 // ─────────────────────────────────────────────────────────────
 // FilterSection — section wrapper with gold eyebrow line

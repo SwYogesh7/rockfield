@@ -34,12 +34,20 @@ const iconBtnStyle: React.CSSProperties = {
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  // mounted prevents Zustand persist rehydration from causing a hydration mismatch.
+  // Server always renders 0; client updates after mount.
+  const [mounted, setMounted] = useState(false)
 
-  // Our custom hook — true when screen >= 1024px
   const isDesktop = useIsDesktop()
 
   const itemCount = useCartStore((state) => state.getItemCount())
   const openCart = useCartStore((state) => state.openCart)
+  // Only show the real count after client hydration
+  const displayCount = mounted ? itemCount : 0
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
@@ -160,7 +168,7 @@ export default function Navbar() {
             {/* Cart — always visible */}
             <button
               onClick={openCart}
-              aria-label={`Cart — ${itemCount} items`}
+              aria-label={`Cart — ${displayCount} items`}
               style={{ ...iconBtnStyle, position: 'relative' }}
               onMouseEnter={(e) =>
                 ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)')
@@ -170,7 +178,7 @@ export default function Navbar() {
               }
             >
               <ShoppingBag size={18} strokeWidth={1.5} />
-              {itemCount > 0 && (
+              {displayCount > 0 && (
                 <span
                   style={{
                     position: 'absolute',
@@ -189,7 +197,7 @@ export default function Navbar() {
                     fontFamily: 'var(--font-body)',
                   }}
                 >
-                  {itemCount > 9 ? '9+' : itemCount}
+                  {displayCount > 9 ? '9+' : displayCount}
                 </span>
               )}
             </button>
