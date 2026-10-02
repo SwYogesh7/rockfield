@@ -58,13 +58,13 @@ export default function DesignSystemPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="type-label mb-2">Valid Image</p>
-                <div className="aspect-square relative rounded-[var(--radius-sm)] overflow-hidden">
+                <div className="aspect-shoe-card rounded-[var(--radius-sm)] overflow-hidden">
                   <ImageWithFallback src="/placeholders/shoe.svg" alt="Valid" fill className="object-cover" />
                 </div>
               </div>
               <div>
                 <p className="type-label mb-2">Broken Image (Shows SVG)</p>
-                <div className="aspect-square relative rounded-[var(--radius-sm)] overflow-hidden border border-ivory-300">
+                <div className="aspect-shoe-card rounded-[var(--radius-sm)] overflow-hidden border border-ivory-300">
                   <ImageWithFallback src="/broken-image.jpg" alt="Broken" fill className="object-cover" />
                 </div>
               </div>
@@ -75,4 +75,5 @@ export default function DesignSystemPage() {
     </div>
   )
 }
+
 

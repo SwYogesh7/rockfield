@@ -59,7 +59,7 @@ export default function Hero() {
     <section className="relative w-full bg-ivory-100 flex flex-col lg:flex-row min-h-screen">
       
       {/* ── LEFT COLUMN — text content ── */}
-      <div className="flex-1 flex flex-col justify-center px-6 md:px-12 lg:px-20 pt-32 pb-16 lg:pt-40 lg:pb-32 relative z-10">
+      <div className="flex-1 flex flex-col justify-center px-6 md:px-12 lg:px-20 pt-24 pb-20 lg:pt-40 lg:pb-32 relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide.id}
@@ -108,7 +108,7 @@ export default function Hero() {
         </AnimatePresence>
 
         {/* Slide Controls */}
-        <div className="absolute bottom-10 left-6 md:left-12 lg:left-20 flex items-center gap-4">
+        <div className="absolute bottom-4 md:bottom-10 left-6 md:left-12 lg:left-20 flex items-center gap-4">
           <button onClick={prevSlide} className="size-10 rounded-full border border-dark-200 flex items-center justify-center text-dark-400 hover:border-gold-500 hover:text-gold-500 transition-colors" aria-label="Previous slide">
             <ArrowLeft size={16} />
           </button>
@@ -131,7 +131,7 @@ export default function Hero() {
             exit={{ opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.7 }}
             className={`w-full bg-ivory-200 relative overflow-hidden flex items-center justify-center rounded-[var(--radius-md)] ${
-              isDesktop ? 'aspect-video' : 'aspect-[4/5]'
+              isDesktop ? "aspect-hero" : "aspect-portrait"
             }`}
           >
             {/* Ivory placeholder config */}
@@ -145,4 +145,6 @@ export default function Hero() {
     </section>
   )
 }
+
+
 

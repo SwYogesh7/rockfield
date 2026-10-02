@@ -14,7 +14,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
 
   if (!images.length) {
     return (
-      <div className="aspect-[4/5] w-full bg-ivory-200 flex items-center justify-center rounded-[var(--radius-md)]">
+      <div className="aspect-portrait w-full bg-ivory-200 flex items-center justify-center rounded-[var(--radius-md)]">
         <span className="type-eyebrow text-dark-200">No images available</span>
       </div>
     )
@@ -29,7 +29,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
             key={idx}
             onClick={() => setActiveIdx(idx)}
             className={cn(
-              "relative aspect-[4/5] w-20 md:w-full shrink-0 overflow-hidden rounded-[var(--radius-sm)] border-2 transition-all outline-none focus-visible:border-gold-500",
+              "relative aspect-portrait w-20 md:w-full shrink-0 overflow-hidden rounded-[var(--radius-sm)] border-2 transition-all outline-none focus-visible:border-gold-500",
               activeIdx === idx ? "border-dark-900" : "border-transparent hover:border-ivory-400"
             )}
           >
@@ -45,7 +45,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
       </div>
 
       {/* MAIN IMAGE */}
-      <div className="relative aspect-[4/5] flex-1 bg-ivory-100 rounded-[var(--radius-md)] overflow-hidden">
+      <div className="relative aspect-portrait flex-1 bg-ivory-100 rounded-[var(--radius-md)] overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeIdx}
@@ -69,4 +69,5 @@ export function ProductGallery({ images }: ProductGalleryProps) {
     </div>
   )
 }
+
 
