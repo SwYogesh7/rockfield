@@ -39,7 +39,7 @@ export default function CategoryTiles() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: i * 0.1, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <Link href={`/shop/${cat}`} className="group block relative overflow-hidden rounded-[var(--radius-sm)] aspect-portrait bg-ivory-200 outline-none focus-visible:ring-2 focus-visible:ring-gold-500">
+              <Link href={`/shop/${cat}`} className="group block relative overflow-hidden rounded-[var(--radius-sm)] aspect-portrait relative bg-ivory-200 outline-none focus-visible:ring-2 focus-visible:ring-gold-500">
                 <ImageWithFallback
                   src={CATEGORY_IMAGES[cat] || CATEGORY_IMAGES.sneakers}
                   alt={`${cat} shoes`}
@@ -63,6 +63,7 @@ export default function CategoryTiles() {
     </section>
   )
 }
+
 
 
 

@@ -130,7 +130,7 @@ export default function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.7 }}
-            className={`w-full bg-ivory-200 relative overflow-hidden flex items-center justify-center rounded-[var(--radius-md)] ${
+            className={`relative w-full bg-ivory-200 overflow-hidden flex items-center justify-center rounded-[var(--radius-md)] ${
               isDesktop ? "aspect-hero" : "aspect-portrait"
             }`}
           >
@@ -145,6 +145,7 @@ export default function Hero() {
     </section>
   )
 }
+
 
 
 

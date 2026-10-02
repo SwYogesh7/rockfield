@@ -37,7 +37,7 @@ export function ShopView({ title, products, total, facets, totalPages }: ShopVie
         <SortBar resultCount={total} />
         {activeCount > 0 && <FilterChips className="mt-6 mb-2" />}
 
-        <div className="flex gap-12 mt-8 lg:mt-12">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 mt-8 lg:mt-12">
           {/* ── DESKTOP SIDEBAR ── */}
           {isDesktop && (
             <aside className="w-56 flex-shrink-0">
@@ -132,3 +132,4 @@ export function ShopView({ title, products, total, facets, totalPages }: ShopVie
     </div>
   )
 }
+
