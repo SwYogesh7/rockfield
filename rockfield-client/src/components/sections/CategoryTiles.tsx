@@ -2,16 +2,16 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { CATEGORIES } from '@/types'
 
 const CATEGORY_IMAGES: Record<string, string> = {
-  sneakers: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80',
-  formal: 'https://images.unsplash.com/photo-1520179800-c54efcea3d61?w=600&q=80',
-  casual: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80',
-  boots: 'https://images.unsplash.com/photo-1539185386684-4d8e0098c5be?w=600&q=80',
-  sandals: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80',
-  sports: 'https://images.unsplash.com/photo-1595950653106-6c80ad8d3ba1?w=600&q=80',
+  sneakers: '/placeholders/shoe.svg',
+  formal: '/placeholders/shoe.svg',
+  casual: '/placeholders/shoe.svg',
+  boots: '/placeholders/shoe.svg',
+  sandals: '/placeholders/shoe.svg',
+  sports: '/placeholders/shoe.svg',
 }
 
 export default function CategoryTiles() {
@@ -40,7 +40,7 @@ export default function CategoryTiles() {
               transition={{ delay: i * 0.1, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               <Link href={`/shop/${cat}`} className="group block relative overflow-hidden rounded-[var(--radius-sm)] aspect-[4/5] bg-ivory-200 outline-none focus-visible:ring-2 focus-visible:ring-gold-500">
-                <Image
+                <ImageWithFallback
                   src={CATEGORY_IMAGES[cat] || CATEGORY_IMAGES.sneakers}
                   alt={`${cat} shoes`}
                   fill
@@ -63,3 +63,5 @@ export default function CategoryTiles() {
     </section>
   )
 }
+
+

@@ -4,9 +4,9 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 
 const uses = [
-  { label: 'Daily Office', href: '/shop/formal', img: 'https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=800&q=80' },
-  { label: 'Weekend Getaway', href: '/shop/casual', img: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=800&q=80' },
-  { label: 'Active Performance', href: '/shop/sports', img: 'https://images.unsplash.com/photo-1556815302-0e9e4f4fb30c?w=800&q=80' }
+  { label: 'Daily Office', href: '/shop/formal', img: '/placeholders/shoe.svg' },
+  { label: 'Weekend Getaway', href: '/shop/casual', img: '/placeholders/shoe.svg' },
+  { label: 'Active Performance', href: '/shop/sports', img: '/placeholders/shoe.svg' }
 ]
 
 export default function ShopByUse() {
@@ -53,3 +53,4 @@ export default function ShopByUse() {
     </section>
   )
 }
+

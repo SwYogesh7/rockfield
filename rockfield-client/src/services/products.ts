@@ -33,7 +33,7 @@ export async function getProducts(
     filtered = filtered.filter((p) => p.basePrice <= filters.maxPrice!)
   }
   if (filters?.colors?.length) {
-    filtered = filtered.filter((p) => p.colors.some((c) => filters.colors!.includes(c.id)))
+    filtered = filtered.filter((p) => p.colors.some((c) => filters.colors!.includes(c.family || c.name.toLowerCase())))
   }
   if (filters?.sizes?.length) {
     filtered = filtered.filter((p) => 
@@ -66,7 +66,7 @@ export async function getProducts(
       price: p.basePrice,
       compareAtPrice: p.compareAtPrice,
       images: p.colors[0].images.map(img => img.url),
-      colors: p.colors.map(c => ({ id: c.id, name: c.name, hex: c.hex })),
+      colors: p.colors.map(c => ({ id: c.id, name: c.name, hex: c.hex, family: c.family })),
       rating: p.rating,
       reviewCount: p.reviewCount,
       isNew: p.isNew,
@@ -111,20 +111,21 @@ function aggregate(items: string[]): FacetCount[] {
 }
 
 function aggregateColors(products: Product[]): ColorFacet[] {
-  const map = new Map<string, { count: number, hex: string, name: string }>()
+  const map = new Map<string, { count: number, hex: string, label: string }>()
   products.forEach(p => {
     p.colors.forEach(c => {
-      const existing = map.get(c.id)
+      const family = c.family || c.name.toLowerCase()
+      const existing = map.get(family)
       if (existing) {
         existing.count += 1
       } else {
-        map.set(c.id, { count: 1, hex: c.hex, name: c.name })
+        map.set(family, { count: 1, hex: c.hex, label: family })
       }
     })
   })
-  return Array.from(map.entries()).map(([id, data]) => ({
-    value: id,
-    label: data.name,
+  return Array.from(map.entries()).map(([family, data]) => ({
+    value: family,
+    label: data.label,
     hex: data.hex,
     count: data.count
   })).sort((a, b) => b.count - a.count)
@@ -165,3 +166,7 @@ export async function getBestSellers(limit = 8): Promise<ProductCardData[]> {
   const { items } = await getProducts({}, 'rating', 1, limit)
   return items
 }
+
+
+
+

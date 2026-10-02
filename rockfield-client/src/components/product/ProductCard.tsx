@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { Heart } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -60,7 +60,7 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      <Link href={`/product/${data.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-[var(--radius-sm)]">
+      <Link href={`/products/${data.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-[var(--radius-sm)]">
         {/* ── IMAGE AREA ── */}
         <div className="aspect-square w-full relative overflow-hidden rounded-[var(--radius-sm)] bg-ivory-100 mb-3">
           {!primaryImg ? (
@@ -68,7 +68,7 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
           ) : (
             <>
               {/* Primary Image */}
-              <Image
+              <ImageWithFallback
                 src={primaryImg}
                 alt={data.name}
                 fill
@@ -81,7 +81,7 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
               />
               {/* Hover Image */}
               {primaryImg !== hoverImg && (
-                <Image
+                <ImageWithFallback
                   src={hoverImg}
                   alt={`${data.name} hover view`}
                   fill
@@ -166,7 +166,7 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
           )}
         </div>
 
-        <Link href={`/product/${data.slug}`} className="outline-none focus-visible:ring-1 focus-visible:ring-gold-500 rounded-sm">
+        <Link href={`/products/${data.slug}`} className="outline-none focus-visible:ring-1 focus-visible:ring-gold-500 rounded-sm">
           <h3 className="font-body text-sm font-500 text-dark-900 truncate mb-1">
             {data.name}
           </h3>
@@ -194,3 +194,5 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
     </motion.div>
   )
 }
+
+

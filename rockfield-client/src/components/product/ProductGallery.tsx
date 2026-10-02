@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
@@ -33,7 +33,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
               activeIdx === idx ? "border-dark-900" : "border-transparent hover:border-ivory-400"
             )}
           >
-            <Image
+            <ImageWithFallback
               src={img.url}
               alt={img.alt}
               fill
@@ -55,7 +55,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
             transition={{ duration: 0.3 }}
             className="absolute inset-0"
           >
-            <Image
+            <ImageWithFallback
               src={images[activeIdx].url}
               alt={images[activeIdx].alt}
               fill
@@ -69,3 +69,4 @@ export function ProductGallery({ images }: ProductGalleryProps) {
     </div>
   )
 }
+

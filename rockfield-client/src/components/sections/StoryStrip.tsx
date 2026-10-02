@@ -49,7 +49,7 @@ export default function StoryStrip() {
               className="absolute top-0 right-0 w-[70%] h-[70%] rounded-[var(--radius-md)] overflow-hidden"
             >
               <Image
-                src="https://images.unsplash.com/photo-1544253303-34e87d8d21b3?w=800&q=80"
+                src="/placeholders/shoe.svg"
                 alt="Leather craftsmanship"
                 fill
                 className="object-cover"
@@ -64,7 +64,7 @@ export default function StoryStrip() {
               className="absolute bottom-0 left-0 w-[55%] h-[55%] rounded-[var(--radius-md)] overflow-hidden border-4 border-dark-900"
             >
               <Image
-                src="https://images.unsplash.com/photo-1595950653106-6c80ad8d3ba1?w=800&q=80"
+                src="/placeholders/shoe.svg"
                 alt="Shoe details"
                 fill
                 className="object-cover"
@@ -76,3 +76,4 @@ export default function StoryStrip() {
     </section>
   )
 }
+

@@ -30,6 +30,7 @@ export interface ProductColor {
   id: string
   name: string // e.g. "Tan Brown"
   slug: string // e.g. "tan-brown"
+  family: string // Normalized family e.g. "brown", "black", "white"
   hex: string // swatch colour
   images: ProductImage[] // 5-6 per colour; first is primary
 }
@@ -55,6 +56,7 @@ export interface Product {
   id: string
   slug: string
   name: string
+  tagline: string // Short one-liner
   description: string
   category: ShoeCategory
   gender: Gender
@@ -81,7 +83,7 @@ export interface ProductCardData {
   price: number // lowest variant price, paise
   compareAtPrice?: number
   images: string[] // 1st is primary, 2nd is hover
-  colors: Pick<ProductColor, 'id' | 'name' | 'hex'>[]
+  colors: Pick<ProductColor, 'id' | 'name' | 'hex' | 'family'>[]
   rating: number
   reviewCount: number
   isNew: boolean

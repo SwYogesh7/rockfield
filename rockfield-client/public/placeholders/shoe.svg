@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <rect width="800" height="800" fill="#fdfcf9" />
+  
+  <g transform="translate(180, 280) scale(1.1)" fill="none" stroke="#d4d0c5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Main Shoe Outline -->
+    <path d="M 330 190 
+             C 340 190, 360 170, 370 140
+             C 380 110, 370 95, 350 90
+             C 310 80, 260 50, 190 50
+             C 120 50, 60 70, 30 110
+             C 10 135, 10 170, 30 190
+             Z" />
+             
+    <!-- Toe cap -->
+    <path d="M 30 110 C 60 90, 100 80, 120 90" />
+    
+    <!-- Heel collar -->
+    <path d="M 350 90 C 330 85, 300 95, 270 120" />
+    
+    <!-- Midsole line -->
+    <path d="M 25 160 C 100 170, 250 170, 365 160" />
+    
+    <!-- Details / Accents -->
+    <path d="M 120 90 C 150 120, 200 130, 250 120" stroke-width="4" />
+    <path d="M 270 120 C 260 140, 230 150, 190 140" stroke-width="4" />
+    
+    <!-- Laces area -->
+    <path d="M 190 50 L 195 70 M 210 52 L 215 72 M 230 55 L 235 75 M 250 60 L 255 80" stroke-width="4" />
+  </g>
+</svg>

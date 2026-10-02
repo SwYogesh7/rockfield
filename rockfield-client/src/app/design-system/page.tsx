@@ -1,164 +1,78 @@
-import { notFound } from 'next/navigation'
+import { Container } from '@/components/ui/Container'
+import { Section } from '@/components/ui/Section'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { SectionHeading } from '@/components/ui/SectionHeading'
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-
-export const metadata = {
-  title: 'Design System | Rockfield',
-  robots: {
-    index: false,
-    follow: false,
-  },
-}
 
 export default function DesignSystemPage() {
-  // Prevent access in production completely.
-  if (process.env.NODE_ENV === 'production') {
-    notFound()
-  }
-
   return (
-    <main className="container-luxury py-24 min-h-screen">
-      <div className="mb-16">
-        <h1 className="type-h1 mb-4">Design System</h1>
-        <p className="type-body max-w-2xl">
-          Dev-only preview page for Rockfield UI components and tokens. This page is excluded from
-          production builds and search indexing.
-        </p>
-      </div>
+    <div className="bg-ivory-50 min-h-screen pt-20 pb-24 flex flex-col gap-12">
+      <PageHeader 
+        title="Design System" 
+        breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Design System' }]}
+        description="A showcase of the UI primitives built for Phase 1."
+      />
 
-      <div className="space-y-24">
-        {/* ── TYPOGRAPHY ── */}
-        <section>
-          <h2 className="type-eyebrow mb-8">Typography Scale</h2>
-          <div className="space-y-8 max-w-4xl border-l border-ivory-300 pl-8">
-            <div>
-              <p className="type-display">The quick brown fox</p>
-              <p className="type-small mt-2">Display (Cormorant Garamond)</p>
-            </div>
-            <div>
-              <p className="type-h1">The quick brown fox</p>
-              <p className="type-small mt-2">H1 (Cormorant Garamond)</p>
-            </div>
-            <div>
-              <p className="type-h2">The quick brown fox</p>
-              <p className="type-small mt-2">H2 (Cormorant Garamond)</p>
-            </div>
-            <div>
-              <p className="type-h3">The quick brown fox</p>
-              <p className="type-small mt-2">H3 (Cormorant Garamond)</p>
-            </div>
-            <div>
-              <p className="type-h4">The quick brown fox</p>
-              <p className="type-small mt-2">H4 (Cormorant Garamond)</p>
-            </div>
-            <div>
-              <p className="type-body">The quick brown fox jumps over the lazy dog.</p>
-              <p className="type-small mt-2">Body (Jost)</p>
-            </div>
-            <div>
-              <p className="type-small">The quick brown fox jumps over the lazy dog.</p>
-              <p className="type-small mt-2">Small (Jost)</p>
-            </div>
-            <div>
-              <p className="type-label">The quick brown fox</p>
-              <p className="type-small mt-2">Label (Jost Uppercase)</p>
+      <Container>
+        <Section size="sm" className="bg-ivory-100 mb-8 border border-ivory-300 rounded-[var(--radius-sm)]">
+          <SectionHeading 
+            eyebrow="Primitive" 
+            title={<span><em className="italic text-gold-500">Section</em> Size SM</span>}
+            link={{ label: 'View Source', href: '#' }}
+            className="px-6 md:px-12"
+          />
+          <p className="type-body px-6 md:px-12">Uses py-8 md:py-12 (32px / 48px). Perfect for compact content rows.</p>
+        </Section>
+
+        <Section size="md" className="bg-ivory-100 mb-8 border border-ivory-300 rounded-[var(--radius-sm)]">
+          <SectionHeading 
+            eyebrow="Primitive" 
+            title={<span><em className="italic text-gold-500">Section</em> Size MD</span>}
+            className="px-6 md:px-12"
+          />
+          <p className="type-body px-6 md:px-12">Uses py-12 md:py-20 (48px / 80px). Standard section spacing.</p>
+        </Section>
+
+        <Section size="lg" className="bg-ivory-100 mb-8 border border-ivory-300 rounded-[var(--radius-sm)]">
+          <SectionHeading 
+            eyebrow="Primitive" 
+            title={<span><em className="italic text-gold-500">Section</em> Size LG</span>}
+            className="px-6 md:px-12"
+          />
+          <p className="type-body px-6 md:px-12">Uses py-16 md:py-28 (64px / 112px). For hero or statement sections.</p>
+        </Section>
+
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="p-8 bg-white border border-ivory-300 rounded-[var(--radius-sm)]">
+            <h3 className="type-h3 mb-6">Buttons (Replacing old classes)</h3>
+            <div className="flex flex-wrap gap-4">
+              <Button>Primary</Button>
+              <Button variant="secondary">Secondary</Button>
+              <Button variant="ghost">Ghost</Button>
             </div>
           </div>
-        </section>
-
-        {/* ── COLOURS ── */}
-        <section>
-          <h2 className="type-eyebrow mb-8">Brand Colours</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 bg-ivory-50 border border-ivory-300 rounded-md">ivory-50</div>
-            <div className="p-4 bg-ivory-100 border border-ivory-300 rounded-md">ivory-100</div>
-            <div className="p-4 bg-ivory-200 border border-ivory-300 rounded-md">ivory-200</div>
-            <div className="p-4 bg-ivory-300 border border-ivory-400 rounded-md">ivory-300</div>
-
-            <div className="p-4 bg-gold-300 text-dark-900 rounded-md">gold-300</div>
-            <div className="p-4 bg-gold-400 text-dark-900 rounded-md">gold-400</div>
-            <div className="p-4 bg-gold-500 text-dark-900 rounded-md">gold-500</div>
-            <div className="p-4 bg-gold-700 text-ivory-50 rounded-md">gold-700</div>
-
-            <div className="p-4 bg-dark-200 text-dark-900 rounded-md">dark-200</div>
-            <div className="p-4 bg-dark-400 text-ivory-50 rounded-md">dark-400</div>
-            <div className="p-4 bg-dark-700 text-ivory-50 rounded-md">dark-700</div>
-            <div className="p-4 bg-dark-900 text-ivory-50 rounded-md">dark-900</div>
-          </div>
-        </section>
-
-        {/* ── BUTTONS ── */}
-        <section>
-          <h2 className="type-eyebrow mb-8">Buttons</h2>
-          <div className="flex flex-wrap gap-6 items-center">
-            <Button variant="primary">Primary CTA</Button>
-            <Button variant="secondary">Secondary Action</Button>
-            <Button variant="ghost">Ghost Button</Button>
-            <Button variant="gold">Sale / Promo</Button>
-            <Button variant="link">Link Style</Button>
-            <Button variant="destructive">Destructive</Button>
-          </div>
-        </section>
-
-        {/* ── INPUTS ── */}
-        <section>
-          <h2 className="type-eyebrow mb-8">Form Controls</h2>
-          <div className="grid md:grid-cols-2 gap-12 max-w-2xl">
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="type-label">Email Address</label>
-                <Input placeholder="name@example.com" />
-              </div>
-              <div className="space-y-2">
-                <label className="type-label">Error State</label>
-                <Input placeholder="Invalid input" aria-invalid="true" />
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex items-center space-x-3">
-                <Checkbox id="terms" />
-                <label htmlFor="terms" className="type-small cursor-pointer">
-                  Accept terms and conditions
-                </label>
-              </div>
-
-              <RadioGroup defaultValue="standard">
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="standard" id="r1" />
-                  <label htmlFor="r1" className="type-small cursor-pointer">
-                    Standard Delivery (Free)
-                  </label>
+          
+          <div className="p-8 bg-white border border-ivory-300 rounded-[var(--radius-sm)]">
+            <h3 className="type-h3 mb-6">ImageWithFallback</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="type-label mb-2">Valid Image</p>
+                <div className="aspect-square relative rounded-[var(--radius-sm)] overflow-hidden">
+                  <ImageWithFallback src="/placeholders/shoe.svg" alt="Valid" fill className="object-cover" />
                 </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="express" id="r2" />
-                  <label htmlFor="r2" className="type-small cursor-pointer">
-                    Express Delivery (₹150)
-                  </label>
+              </div>
+              <div>
+                <p className="type-label mb-2">Broken Image (Shows SVG)</p>
+                <div className="aspect-square relative rounded-[var(--radius-sm)] overflow-hidden border border-ivory-300">
+                  <ImageWithFallback src="/broken-image.jpg" alt="Broken" fill className="object-cover" />
                 </div>
-              </RadioGroup>
+              </div>
             </div>
           </div>
-        </section>
-
-        {/* ── TABS ── */}
-        <section>
-          <h2 className="type-eyebrow mb-8">Tabs (Line variant)</h2>
-          <Tabs defaultValue="details" className="max-w-md">
-            <TabsList>
-              <TabsTrigger value="details">Details</TabsTrigger>
-              <TabsTrigger value="materials">Materials</TabsTrigger>
-              <TabsTrigger value="care">Care</TabsTrigger>
-            </TabsList>
-            <TabsContent value="details">Product details content goes here.</TabsContent>
-            <TabsContent value="materials">Material breakdown goes here.</TabsContent>
-            <TabsContent value="care">Care instructions go here.</TabsContent>
-          </Tabs>
-        </section>
-      </div>
-    </main>
+        </div>
+      </Container>
+    </div>
   )
 }
+

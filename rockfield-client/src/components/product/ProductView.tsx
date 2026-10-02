@@ -57,7 +57,7 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
       price: product.basePrice,
       compareAtPrice: product.compareAtPrice,
       images: product.colors[0].images.map(img => img.url),
-      colors: product.colors.map(c => ({ id: c.id, name: c.name, hex: c.hex })),
+      colors: product.colors.map(c => ({ id: c.id, name: c.name, hex: c.hex, family: c.family })),
       rating: product.rating,
       reviewCount: product.reviewCount,
       isNew: product.isNew,
@@ -121,7 +121,7 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
             
             {/* Short description / Tagline */}
             <p className="type-body text-dark-700 mt-4">
-              {product.description.split('\n')[0]}
+              {product.tagline}
             </p>
           </div>
 
@@ -151,3 +151,5 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
     </div>
   )
 }
+
+

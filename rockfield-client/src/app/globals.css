@@ -86,35 +86,20 @@
   --text-7xl: 4.5rem; /* 72px — editorial splash */
 
   /* ── SPACING ────────────────────────────
-     Consistent spacing prevents the
-     "random padding everywhere" problem.
-     Everything is a multiple of 4px.
+     Tailwind v4 derives ALL numeric spacing
+     utilities (p-7, gap-2.5, h-14 …) from the
+     base --spacing multiplier. Do NOT define
+     individual --spacing-N overrides here — it
+     breaks the full default scale (half steps,
+     odd numbers, etc.) by replacing them.
+
+     The base --spacing is injected by Tailwind
+     automatically from the @import. Only --spacing-px
+     is declared here as a named CSS variable for
+     direct CSS use.
   ─────────────────────────────────────── */
 
   --spacing-px: 1px;
-  --spacing-1: 0.25rem; /* 4px */
-  --spacing-2: 0.5rem; /* 8px */
-  --spacing-3: 0.75rem; /* 12px */
-  --spacing-4: 1rem; /* 16px */
-  --spacing-5: 1.25rem; /* 20px */
-  --spacing-6: 1.5rem; /* 24px */
-  --spacing-8: 2rem; /* 32px */
-  --spacing-10: 2.5rem; /* 40px */
-  --spacing-12: 3rem; /* 48px */
-  --spacing-16: 4rem; /* 64px */
-  --spacing-20: 5rem; /* 80px */
-  --spacing-24: 6rem; /* 96px */
-  --spacing-28: 7rem; /* 112px */
-  --spacing-32: 8rem; /* 128px */
-  --spacing-36: 9rem; /* 144px */
-  --spacing-40: 10rem; /* 160px */
-  --spacing-44: 11rem; /* 176px */
-  --spacing-48: 12rem; /* 192px */
-  --spacing-56: 14rem; /* 224px */
-  --spacing-64: 16rem; /* 256px */
-  --spacing-72: 18rem; /* 288px */
-  --spacing-80: 20rem; /* 320px */
-  --spacing-96: 24rem; /* 384px */
 
   /* ── BORDER RADIUS ──────────────────────
      Luxury brands use very subtle rounding
@@ -186,15 +171,7 @@
    This is the "reset + foundation" layer.
 ───────────────────────────────────────── */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box; /* padding/border don't add to width */
-  margin: 0;
-  padding: 0;
-}
-
-html {
+@layer base { html {
   /* Enables smooth scrolling for anchor links */
   scroll-behavior: smooth;
 
@@ -247,12 +224,7 @@ video {
   display: block; /* removes the small gap below images */
 }
 
-button {
-  cursor: pointer;
-  font-family: var(--font-body);
-}
-
-/* ─────────────────────────────────────────
+button { cursor: pointer; font-family: var(--font-body); } } /* ─────────────────────────────────────────
    UTILITY CLASSES
    Small reusable helpers we'll use often.
    These are in addition to Tailwind classes.
@@ -274,6 +246,34 @@ button {
     padding-right: var(--container-pad-lg);
   }
 }
+
+/* ── UTILITY HELPERS (Tailwind v4 @utility) ───────────────── */
+/* These generate the same as Tailwind utilities and are safe  */
+/* to use in className props without phantom-class warnings.   */
+
+@utility hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* font-500 / font-400 — Tailwind's semantic weight aliases.
+   Use font-medium / font-normal instead in new code.
+   These shims keep old code working without renames. */
+@utility font-500 {
+  font-weight: 500;
+}
+
+@utility font-400 {
+  font-weight: 400;
+}
+
 
 /* Gold underline decoration — used on section titles */
 .gold-underline {
@@ -298,7 +298,7 @@ button {
   font-size: var(--text-xs);
   letter-spacing: 0.25em; /* wide letter spacing = luxury feel */
   text-transform: uppercase;
-  color: var(--color-gold-500);
+  color: var(--color-gold-text);
 }
 
 /* ─────────────────────────────────────────
@@ -640,3 +640,4 @@ button {
 .bg-success-surface { background-color: var(--color-success-bg); }
 .bg-error-surface   { background-color: var(--color-error-bg); }
 .bg-warning-surface { background-color: var(--color-warning-bg); }
+

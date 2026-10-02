@@ -1,6 +1,7 @@
 'use client'
 
 import { Star } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface ReviewsProps {
   rating: number
@@ -41,7 +42,7 @@ export function Reviews({ rating, count }: ReviewsProps) {
               <span className="type-small text-dark-400">Based on {count} reviews</span>
             </div>
           </div>
-          <button className="btn-secondary w-full md:w-auto mt-4">Write a Review</button>
+          <Button variant="secondary" className="w-full md:w-auto mt-4">Write a Review</Button>
         </div>
 
         {/* LIST */}

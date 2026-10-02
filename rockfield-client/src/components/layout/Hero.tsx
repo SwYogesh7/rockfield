@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowLeft } from 'lucide-react'
 import { useIsDesktop } from '@/lib/hooks/useIsDesktop'
+import { Button } from '@/components/ui/button'
 
 type HeroSlide = {
   id: string
@@ -89,20 +90,18 @@ export default function Hero() {
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-6">
-              <Link
-                href={slide.ctaPrimary.href}
-                className="btn-primary"
-              >
-                {slide.ctaPrimary.label}
-              </Link>
+              <Button asChild>
+                <Link href={slide.ctaPrimary.href}>
+                  {slide.ctaPrimary.label}
+                </Link>
+              </Button>
               
               {slide.ctaSecondary && (
-                <Link
-                  href={slide.ctaSecondary.href}
-                  className="type-label text-dark-400 border-b border-dark-400 pb-0.5 hover:text-gold-500 hover:border-gold-500 transition-colors"
-                >
-                  {slide.ctaSecondary.label}
-                </Link>
+                <Button variant="link" className="px-0 uppercase tracking-widest" asChild>
+                  <Link href={slide.ctaSecondary.href}>
+                    {slide.ctaSecondary.label}
+                  </Link>
+                </Button>
               )}
             </div>
           </motion.div>
@@ -146,3 +145,4 @@ export default function Hero() {
     </section>
   )
 }
+

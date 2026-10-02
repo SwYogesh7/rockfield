@@ -16,7 +16,7 @@ export function ColorSelector({ product, activeColorId }: ColorSelectorProps) {
   const handleColorChange = (colorId: string) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('colour', colorId)
-    router.push(`/product/${product.slug}?${params.toString()}`, { scroll: false })
+    router.push(`/products/${product.slug}?${params.toString()}`, { scroll: false })
   }
 
   const activeColor = product.colors.find((c) => c.id === activeColorId) || product.colors[0]
@@ -53,3 +53,4 @@ export function ColorSelector({ product, activeColorId }: ColorSelectorProps) {
     </div>
   )
 }
+
