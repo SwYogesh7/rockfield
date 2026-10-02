@@ -8,6 +8,8 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
+import { Section } from '@/components/ui/Section'
+import { Container } from '@/components/ui/Container'
 
 const newsletterSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -43,8 +45,8 @@ export default function Newsletter() {
   }
 
   return (
-    <section className="py-24 bg-ivory-100 border-y border-ivory-300">
-      <div className="container-luxury max-w-4xl mx-auto text-center">
+    <Section className="bg-ivory-100 border-y border-ivory-300">
+      <Container className="max-w-4xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -66,7 +68,7 @@ export default function Newsletter() {
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto relative">
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-2">
               <div className="flex-1 text-left relative">
                 <Input
                   {...register('email')}
@@ -84,7 +86,7 @@ export default function Newsletter() {
               <Button 
                 type="submit" 
                 variant="primary" 
-                className="h-12 px-8"
+                className="h-12 px-8 w-full sm:w-auto"
                 disabled={isSubmitting || isSuccess}
               >
                 {isSubmitting ? 'Joining...' : isSuccess ? 'Joined' : 'Subscribe'}
@@ -92,7 +94,7 @@ export default function Newsletter() {
             </div>
           </form>
         </motion.div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }

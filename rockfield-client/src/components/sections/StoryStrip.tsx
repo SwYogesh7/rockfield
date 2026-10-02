@@ -4,11 +4,13 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
+import { Section } from '@/components/ui/Section'
+import { Container } from '@/components/ui/Container'
 
 export default function StoryStrip() {
   return (
-    <section className="py-24 bg-dark-900 overflow-hidden">
-      <div className="container-luxury">
+    <Section size="lg" className="bg-dark-900 overflow-hidden">
+      <Container>
         <div className="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
           {/* Left: Text Content */}
           <motion.div
@@ -40,7 +42,7 @@ export default function StoryStrip() {
           </motion.div>
 
           {/* Right: Images */}
-          <div className="relative h-[500px] w-full">
+          <div className="relative h-[400px] md:h-[500px] w-full">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -72,8 +74,8 @@ export default function StoryStrip() {
             </motion.div>
           </div>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
