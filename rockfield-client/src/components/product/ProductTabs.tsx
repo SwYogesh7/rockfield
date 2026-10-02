@@ -11,7 +11,7 @@ export function ProductTabs({ description, materials }: ProductTabsProps) {
   return (
     <div className="mt-12 md:mt-16">
       <Tabs defaultValue="description" className="w-full">
-        <TabsList className="w-full justify-start rounded-none border-b border-ivory-300 bg-transparent p-0 mb-6 gap-8 overflow-x-auto hide-scrollbar">
+        <TabsList className="w-full justify-start rounded-none border-b border-ivory-300 bg-transparent p-0 mb-6 gap-8 overflow-x-auto hide-scrollbar flex-nowrap">
           <TabsTrigger 
             value="description"
             className="rounded-none border-b-2 border-transparent px-0 pb-3 pt-2 font-body text-xs tracking-[0.2em] uppercase text-dark-400 data-[state=active]:border-gold-500 data-[state=active]:text-dark-900 data-[state=active]:shadow-none data-[state=active]:bg-transparent"

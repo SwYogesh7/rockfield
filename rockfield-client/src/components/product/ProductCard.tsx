@@ -62,7 +62,7 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
     >
       <Link href={`/products/${data.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-[var(--radius-sm)]">
         {/* ── IMAGE AREA ── */}
-        <div className="aspect-shoe-card relative w-full overflow-hidden rounded-[var(--radius-sm)] bg-ivory-100 mb-3">
+        <div className="aspect-shoe-card relative w-full overflow-hidden rounded-[var(--radius-sm)] bg-ivory-100 mb-4">
           {!primaryImg ? (
             <PlaceholderImage />
           ) : (
@@ -108,8 +108,7 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
               </span>
             )}
             {data.inStock && data.isNew && !isLowStock && (
-              <span className="bg-dark-900 text-white px-2 py-1 rounded-[var(--radius-sm)] font-body text-[0.625rem] tracking-widest uppercase font-500">
-                New
+              <span className="bg-ivory-100 text-dark-900 px-2 py-1 rounded-[var(--radius-sm)] font-body text-[0.625rem] tracking-widest uppercase font-500">New
               </span>
             )}
             {data.inStock && isSale && (
@@ -194,6 +193,7 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
     </motion.div>
   )
 }
+
 
 
 

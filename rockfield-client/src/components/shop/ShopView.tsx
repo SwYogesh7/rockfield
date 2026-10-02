@@ -9,6 +9,8 @@ import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationLink, PaginationEllipsis } from '@/components/ui/pagination'
 import { useIsDesktop } from '@/lib/hooks/useIsDesktop'
 import { useProductFilters } from '@/lib/hooks/useProductFilters'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { Container } from '@/components/ui/Container'
 import type { ProductCardData, ProductFacets } from '@/types'
 
 interface ShopViewProps {
@@ -25,27 +27,30 @@ export function ShopView({ title, products, total, facets, totalPages }: ShopVie
 
   return (
     <div className="min-h-screen bg-ivory-50 pb-24 pt-16 lg:pt-20">
-      {/* ── HEADER ── */}
-      <div className="border-b border-ivory-300">
-        <div className="container-luxury pt-12 lg:pt-16 pb-8">
-          <h1 className="type-h1 text-dark-900 capitalize">{title}</h1>
-          <p className="type-body text-dark-400 mt-2">{total} {total === 1 ? 'Product' : 'Products'}</p>
-        </div>
-      </div>
+      {/* ?"? HEADER ?"? */}
+      <PageHeader
+        title={title}
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Shop', href: '/shop' },
+          { label: title } // We could refine breadcrumbs logic, but this matches generic shop flow
+        ]}
+        count={total}
+      />
 
-      <div className="container-luxury pt-8">
+      <Container className="pt-8">
         <SortBar resultCount={total} />
         {activeCount > 0 && <FilterChips className="mt-6 mb-2" />}
 
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 mt-8 lg:mt-12">
-          {/* ── DESKTOP SIDEBAR ── */}
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 mt-8 lg:mt-12 items-start">
+          {/* ?"? DESKTOP SIDEBAR ?"? */}
           {isDesktop && (
-            <aside className="w-56 flex-shrink-0">
+            <aside className="w-56 flex-shrink-0 sticky top-24 pb-12 h-[calc(100vh-6rem)] overflow-y-auto hide-scrollbar">
               <FilterSidebar facets={facets} />
             </aside>
           )}
 
-          {/* ── MOBILE FILTER DRAWER ── */}
+          {/* ?"? MOBILE FILTER DRAWER ?"? */}
           {!isDesktop && (
             <div className="mb-6 w-full">
               <Drawer direction="left">
@@ -63,7 +68,7 @@ export function ShopView({ title, products, total, facets, totalPages }: ShopVie
             </div>
           )}
 
-          {/* ── PRODUCT GRID ── */}
+          {/* ?"? PRODUCT GRID ?"? */}
           <div className="flex-1 min-w-0 flex flex-col">
             {products.length > 0 ? (
               <ProductGrid products={products} />
@@ -79,7 +84,7 @@ export function ShopView({ title, products, total, facets, totalPages }: ShopVie
               </div>
             )}
 
-            {/* ── PAGINATION ── */}
+            {/* ?"? PAGINATION ?"? */}
             {totalPages > 1 && (
               <div className="mt-16 pt-8 border-t border-ivory-300">
                 <Pagination>
@@ -94,7 +99,6 @@ export function ShopView({ title, products, total, facets, totalPages }: ShopVie
                     
                     {Array.from({ length: totalPages }).map((_, i) => {
                       const p = i + 1
-                      // Simple windowing logic
                       if (p === 1 || p === totalPages || (p >= page - 1 && p <= page + 1)) {
                         return (
                           <PaginationItem key={p}>
@@ -108,13 +112,16 @@ export function ShopView({ title, products, total, facets, totalPages }: ShopVie
                           </PaginationItem>
                         )
                       }
-                      // Show ellipsis if there's a gap
                       if (p === page - 2 || p === page + 2) {
-                        return <PaginationItem key={p}><PaginationEllipsis /></PaginationItem>
+                        return (
+                          <PaginationItem key={p}>
+                            <PaginationEllipsis />
+                          </PaginationItem>
+                        )
                       }
                       return null
                     })}
-
+                    
                     <PaginationItem>
                       <PaginationNext 
                         href="#" 
@@ -128,7 +135,7 @@ export function ShopView({ title, products, total, facets, totalPages }: ShopVie
             )}
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   )
 }

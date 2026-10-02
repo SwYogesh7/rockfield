@@ -32,6 +32,9 @@ export async function generateMetadata({
   return {
     title: `${title} Shoes | Rockfield Footwear`,
     description: `Shop our collection of ${category} footwear.`,
+    alternates: {
+      canonical: `/shop/${category}`,
+    },
     robots: {
       index: !shouldNoIndex,
       follow: true,
@@ -69,7 +72,7 @@ export default async function CategoryPage({
 
   const sort = (query.sortBy as SortOption) || 'featured'
   const page = query.page ? Number(query.page) : 1
-  const pageSize = 12
+  const pageSize = 4
 
   const { items, total, facets } = await getProducts(filters, sort, page, pageSize)
   const totalPages = Math.ceil(total / pageSize)
@@ -84,3 +87,6 @@ export default async function CategoryPage({
     />
   )
 }
+
+
+

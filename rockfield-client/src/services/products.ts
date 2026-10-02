@@ -170,3 +170,8 @@ export async function getBestSellers(limit = 8): Promise<ProductCardData[]> {
 
 
 
+
+export async function getAllProductSlugs(): Promise<string[]> {
+  await new Promise((r) => setTimeout(r, 0))
+  return mockProductDetails.map(p => p.slug)
+}

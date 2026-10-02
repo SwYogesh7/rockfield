@@ -31,7 +31,7 @@ export function Reviews({ rating, count }: ReviewsProps) {
         {/* SUMMARY */}
         <div className="md:w-1/3 shrink-0">
           <h2 className="type-h2 mb-6">Customer Reviews</h2>
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-baseline gap-4 mb-4">
             <span className="type-display text-dark-900">{rating.toFixed(1)}</span>
             <div className="flex flex-col">
               <div className="flex text-gold-500 mb-1">

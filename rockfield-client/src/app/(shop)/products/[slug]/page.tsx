@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { getProductBySlug, getProductsByCategory } from '@/services/products'
-import { mockProductDetails } from '@/lib/mock-data'
+import { getProductBySlug, getProductsByCategory, getAllProductSlugs } from '@/services/products'
 import { ProductView } from '@/components/product/ProductView'
 import { Reviews } from '@/components/product/Reviews'
 import { RelatedProducts } from '@/components/product/RelatedProducts'
@@ -14,9 +13,7 @@ interface PageProps {
 
 // Generate static params for all mock products
 export async function generateStaticParams() {
-  return mockProductDetails.map((product) => ({
-    slug: product.slug,
-  }))
+  return (await getAllProductSlugs()).map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -76,3 +73,5 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
     </div>
   )
 }
+
+

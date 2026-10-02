@@ -94,8 +94,18 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
           {/* Mobile Product Title (visible only on mobile, standard ecommerce pattern) */}
           <div className="lg:hidden mb-6">
             <h1 className="type-h2 mb-2">{product.name}</h1>
-            <p className="font-body text-xl font-500 text-dark-900">
-              ₹{(product.basePrice / 100).toLocaleString('en-IN')}
+            <div className="flex items-baseline gap-3">
+              <span className="font-body text-xl font-500 text-dark-900">
+                ?{(product.basePrice / 100).toLocaleString('en-IN')}
+              </span>
+              {product.compareAtPrice && product.compareAtPrice > product.basePrice && (
+                <span className="font-body text-sm text-dark-400 line-through">
+                  ?{(product.compareAtPrice / 100).toLocaleString('en-IN')}
+                </span>
+              )}
+            </div>
+            <p className="type-body text-dark-700 mt-2">
+              {product.tagline}
             </p>
           </div>
           
@@ -110,11 +120,11 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
             <h1 className="type-h2 mb-3">{product.name}</h1>
             <div className="flex items-baseline gap-3">
               <span className="font-body text-2xl font-500 text-dark-900">
-                ₹{(product.basePrice / 100).toLocaleString('en-IN')}
+                &#8377;{(product.basePrice / 100).toLocaleString('en-IN')}
               </span>
               {product.compareAtPrice && product.compareAtPrice > product.basePrice && (
                 <span className="font-body text-base text-dark-400 line-through">
-                  ₹{(product.compareAtPrice / 100).toLocaleString('en-IN')}
+                  &#8377;{(product.compareAtPrice / 100).toLocaleString('en-IN')}
                 </span>
               )}
             </div>
@@ -128,7 +138,7 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
           <ColorSelector product={product} activeColorId={activeColor.id} />
           
           <SizeSelector 
-            variants={product.variants}
+            variants={product.variants.filter(v => v.colorId === activeColor.id)}
             selectedSize={selectedSize}
             onSizeSelect={setSelectedSize}
           />
@@ -151,5 +161,7 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
     </div>
   )
 }
+
+
 
 

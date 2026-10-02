@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { MapPin, Check, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 export function PincodeChecker() {
   const [pincode, setPincode] = useState('')
@@ -30,9 +31,9 @@ export function PincodeChecker() {
         <span className="type-label text-dark-900">Check Delivery Options</span>
       </div>
       
-      <form onSubmit={handleCheck} className="flex gap-2">
-        <div className="relative flex-1">
-          <input
+      <form onSubmit={handleCheck} className="flex gap-3 h-12">
+        <div className="relative flex-1 h-full">
+          <Input
             type="text"
             value={pincode}
             onChange={(e) => {
@@ -41,7 +42,7 @@ export function PincodeChecker() {
               setStatus('idle')
             }}
             placeholder="Enter Pincode"
-            className="w-full border border-ivory-400 bg-transparent px-4 py-3 font-body text-sm focus:outline-none focus:border-dark-900"
+            className="w-full h-full pr-10 focus-visible:ring-gold-500 rounded-sm"
           />
           {status === 'valid' && <Check size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-success" />}
           {status === 'invalid' && <X size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-error" />}
@@ -49,6 +50,7 @@ export function PincodeChecker() {
         <Button 
           type="submit" 
           variant="secondary"
+          className="h-full px-6"
           disabled={pincode.length !== 6 || status === 'checking'}
         >
           {status === 'checking' ? 'Checking...' : 'Check'}

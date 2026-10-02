@@ -16,6 +16,9 @@ export async function generateMetadata({
   return {
     title: 'Shop All | Rockfield Footwear',
     description: 'Browse our complete collection of meticulously crafted footwear.',
+    alternates: {
+      canonical: '/shop',
+    },
     robots: {
       index: !shouldNoIndex,
       follow: true,
@@ -44,7 +47,7 @@ export default async function ShopPage({
 
   const sort = (params.sortBy as SortOption) || 'featured'
   const page = params.page ? Number(params.page) : 1
-  const pageSize = 12
+  const pageSize = 4
 
   const { items, total, facets } = await getProducts(filters, sort, page, pageSize)
   const totalPages = Math.ceil(total / pageSize)
@@ -59,3 +62,5 @@ export default async function ShopPage({
     />
   )
 }
+
+

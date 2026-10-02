@@ -34,7 +34,7 @@ function PillButton({
         'transition-all duration-300 cursor-pointer select-none rounded-none outline-none focus-visible:ring-2 focus-visible:ring-gold-500',
         active
           ? 'border-dark-900 bg-dark-900 text-ivory-100'
-          : 'border-ivory-300 text-dark-400 bg-transparent hover:border-dark-400 hover:text-dark-900'
+          : 'border-dark-200 text-dark-400 bg-transparent hover:border-dark-400 hover:text-dark-900'
       )}
     >
       {label}
@@ -53,7 +53,7 @@ function ColourSwatch({
   active: boolean
   onClick: () => void
 }) {
-  const isLight = hex.toUpperCase() === '#F5F5F5' || hex.toUpperCase() === '#FAFAFA' || hex.toUpperCase() === '#FFFFFF'
+  const isLight = ['#F5F5F5','#FAFAFA','#FFFFFF','#FDFCF9','#F5F0E8'].includes(hex.toUpperCase())
   return (
     <div className="flex flex-col items-center gap-2 group w-12">
       <button
@@ -63,7 +63,7 @@ function ColourSwatch({
         aria-pressed={active}
         className={cn(
           'relative size-7 rounded-full transition-all duration-300 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500',
-          isLight ? 'border border-ivory-300' : ''
+          isLight ? 'border border-dark-200' : ''
         )}
         style={{ backgroundColor: hex }}
       >
@@ -115,7 +115,7 @@ function PriceSlider({
         </div>
       </div>
 
-      <div className="relative h-6 mb-2">
+      <div className="relative h-6 mb-2 price-slider">
         <input
           type="range"
           min={rangeMin}
@@ -318,3 +318,6 @@ export function FilterSidebar({ facets, className }: { facets: ProductFacets; cl
     </aside>
   )
 }
+
+
+
