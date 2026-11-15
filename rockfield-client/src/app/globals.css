@@ -583,7 +583,9 @@ button { cursor: pointer; font-family: var(--font-body); } } /* ─────�
   position: relative;
 }
 
-.aspect-shoe-card > *,
+/* Images only: shoe cards also hold overlays (wishlist button, badges, empty-state text) as
+   direct children, and a `> *` rule stretched those to fill the whole card. */
+.aspect-shoe-card > img,
 .aspect-hero > *,
 .aspect-portrait > * {
   width: 100%;

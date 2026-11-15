@@ -89,6 +89,18 @@ export interface ProductCardData {
   isNew: boolean
   inStock: boolean
   stockCount?: number // for "Only N left" badge
+  /** Variant used by "Add to bag" on listing cards. Absent when nothing is in stock. */
+  quickAdd?: QuickAddVariant
+}
+
+/** The first in-stock variant of a product, pre-resolved for one-click add from a card. */
+export interface QuickAddVariant {
+  variantId: string
+  colorName: string
+  size: UkSize
+  image: string
+  unitPrice: number // paise
+  maxStock: number
 }
 
 // ---------- Cart ----------
@@ -103,6 +115,7 @@ export interface CartItem {
   image: string
   unitPrice: number // paise (re-validate on the server at checkout)
   quantity: number
+  maxStock: number // stock for this variant when last added; caps quantity (re-validate at checkout)
 }
 
 // ---------- Filters ----------

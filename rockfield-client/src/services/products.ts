@@ -1,6 +1,7 @@
 // src/services/products.ts
 import type { Product, ProductCardData, ProductFilters, SortOption, ProductFacets, FacetCount, ColorFacet } from '@/types'
 import { mockProductDetails } from '@/lib/mock-data'
+import { getQuickAddVariant } from '@/lib/quick-add'
 
 export async function getProducts(
   filters?: ProductFilters,
@@ -71,7 +72,8 @@ export async function getProducts(
       reviewCount: p.reviewCount,
       isNew: p.isNew,
       inStock: totalStock > 0,
-      stockCount: totalStock > 0 && totalStock <= 3 ? totalStock : undefined
+      stockCount: totalStock > 0 && totalStock <= 3 ? totalStock : undefined,
+      quickAdd: getQuickAddVariant(p),
     }
   })
 

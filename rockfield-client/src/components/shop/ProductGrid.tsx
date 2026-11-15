@@ -23,6 +23,7 @@ export function ProductGrid({ products }: ProductGridProps) {
           data={product}
           index={index}
           priority={index < 4} // prioritize loading first row of images
+          showAddToBag
         />
       ))}
     </motion.div>

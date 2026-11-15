@@ -6,12 +6,15 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { Heart } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { QuickAddButton } from '@/components/product/QuickAddButton'
 import type { ProductCardData } from '@/types'
 
 interface ProductCardProps {
   data: ProductCardData
   index?: number
   priority?: boolean
+  /** Show the one-click "Add to bag" button (shop grid only). */
+  showAddToBag?: boolean
 }
 
 function formatPrice(paise: number) {
@@ -31,7 +34,12 @@ function PlaceholderImage() {
   )
 }
 
-export default function ProductCard({ data, index = 0, priority = false }: ProductCardProps) {
+export default function ProductCard({
+  data,
+  index = 0,
+  priority = false,
+  showAddToBag = false,
+}: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isWishlisted, setIsWishlisted] = useState(false)
 
@@ -189,6 +197,18 @@ export default function ProductCard({ data, index = 0, priority = false }: Produ
             <span className="text-gold-500 text-[10px]">★</span>
           </div>
         </div>
+
+        {/* Outside the product <Link>: a button nested in a link is invalid and unusable by AT */}
+        {showAddToBag && (
+          <div className="mt-3">
+            <QuickAddButton
+              productId={data.id}
+              slug={data.slug}
+              name={data.name}
+              variant={data.quickAdd}
+            />
+          </div>
+        )}
       </div>
     </motion.div>
   )

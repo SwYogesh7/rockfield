@@ -36,6 +36,7 @@ function Breadcrumbs({ category, name }: { category: string; name: string }) {
 export function ProductView({ product, activeColorId }: ProductViewProps) {
   const [selectedSize, setSelectedSize] = useState<number | null>(null)
   const [prevColorId, setPrevColorId] = useState(activeColorId)
+  const addItem = useCartStore((s) => s.addItem)
   
   if (activeColorId !== prevColorId) {
     setPrevColorId(activeColorId)
@@ -72,14 +73,39 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
   // Handlers
   const handleAddToCart = () => {
     if (!selectedSize) return
-    
-    // P4: Cart will be rebuilt properly. For now, mock a toast.
-    toast.success('Added to Bag', {
-      description: `${product.name} (UK ${selectedSize}, ${activeColor.name})`,
-      action: {
-        label: 'View Bag',
-        onClick: () => useCartStore.getState().openCart()
-      }
+
+    // A variant is one colour × one size; that's what the cart line is keyed on.
+    const variant = product.variants.find(
+      (v) => v.colorId === activeColor.id && v.size === selectedSize
+    )
+    if (!variant || variant.stock <= 0) {
+      toast.error('This size is currently unavailable', {
+        description: `${product.name} — UK ${selectedSize}, ${activeColor.name}`,
+      })
+      return
+    }
+
+    // The store silently clamps quantity to maxStock; tell the user instead of doing nothing.
+    const inBag = useCartStore.getState().items.find((i) => i.variantId === variant.id)
+    if (inBag && inBag.quantity >= variant.stock) {
+      toast.error(`Only ${variant.stock} left in stock`, {
+        description: 'You already have the maximum quantity of this size in your bag.',
+        action: { label: 'View Bag', onClick: () => useCartStore.getState().openCart() },
+      })
+      return
+    }
+
+    // addItem also opens the drawer, which is the confirmation — no toast needed.
+    addItem({
+      variantId: variant.id,
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      colorName: activeColor.name,
+      size: variant.size,
+      image: activeColor.images[0]?.url ?? '',
+      unitPrice: variant.price ?? product.basePrice,
+      maxStock: variant.stock,
     })
   }
 
@@ -96,11 +122,11 @@ export function ProductView({ product, activeColorId }: ProductViewProps) {
             <h1 className="type-h2 mb-2">{product.name}</h1>
             <div className="flex items-baseline gap-3">
               <span className="font-body text-xl font-500 text-dark-900">
-                ?{(product.basePrice / 100).toLocaleString('en-IN')}
+                &#8377;{(product.basePrice / 100).toLocaleString('en-IN')}
               </span>
               {product.compareAtPrice && product.compareAtPrice > product.basePrice && (
                 <span className="font-body text-sm text-dark-400 line-through">
-                  ?{(product.compareAtPrice / 100).toLocaleString('en-IN')}
+                  &#8377;{(product.compareAtPrice / 100).toLocaleString('en-IN')}
                 </span>
               )}
             </div>

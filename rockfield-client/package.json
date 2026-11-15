@@ -17,7 +17,18 @@
     "singleQuote": true,
     "trailingComma": "es5",
     "printWidth": 100,
-    "tabWidth": 2
+    "tabWidth": 2,
+    "overrides": [
+      {
+        "files": [
+          "tests/**/*.ts",
+          "playwright.config.ts"
+        ],
+        "options": {
+          "semi": true
+        }
+      }
+    ]
   },
   "lint-staged": {
     "*.{ts,tsx}": [
