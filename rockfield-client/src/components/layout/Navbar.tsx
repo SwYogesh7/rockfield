@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { ShoppingBag, Search, Heart, Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '@/store/cart'
+import { useWishlistStore } from '@/store/wishlist'
 import { useIsDesktop } from '@/lib/hooks/useIsDesktop'
 import { Logo } from '@/components/ui/logo'
 
@@ -33,6 +34,24 @@ const iconBtnStyle: React.CSSProperties = {
   borderRadius: '2px',
 }
 
+// Count badge on the Wishlist and Cart icons
+const countBadgeStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '2px',
+  right: '2px',
+  backgroundColor: 'var(--color-gold-500)',
+  color: 'white',
+  fontSize: '9px',
+  fontWeight: 600,
+  width: '16px',
+  height: '16px',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontFamily: 'var(--font-body)',
+}
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -45,8 +64,10 @@ export default function Navbar() {
 
   const itemCount = useCartStore((state) => state.getItemCount())
   const openCart = useCartStore((state) => state.openCart)
-  // Only show the real count after client hydration
+  const wishlistCount = useWishlistStore((state) => state.items.length)
+  // Only show the real counts after client hydration
   const displayCount = mounted ? itemCount : 0
+  const displayWishlistCount = mounted ? wishlistCount : 0
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -161,8 +182,8 @@ export default function Navbar() {
             {/* Wishlist — desktop only */}
             {isDesktop && (
               <button
-                aria-label="Wishlist"
-                style={iconBtnStyle}
+                aria-label={`Wishlist — ${displayWishlistCount} items`}
+                style={{ ...iconBtnStyle, position: 'relative' }}
                 onMouseEnter={(e) =>
                   ((e.currentTarget as HTMLElement).style.color = 'var(--color-dark-900)')
                 }
@@ -171,6 +192,11 @@ export default function Navbar() {
                 }
               >
                 <Heart size={18} strokeWidth={1.5} />
+                {displayWishlistCount > 0 && (
+                  <span data-testid="wishlist-count" style={countBadgeStyle}>
+                    {displayWishlistCount > 9 ? '9+' : displayWishlistCount}
+                  </span>
+                )}
               </button>
             )}
 
@@ -188,26 +214,7 @@ export default function Navbar() {
             >
               <ShoppingBag size={18} strokeWidth={1.5} />
               {displayCount > 0 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '2px',
-                    right: '2px',
-                    backgroundColor: 'var(--color-gold-500)',
-                    color: 'white',
-                    fontSize: '9px',
-                    fontWeight: 600,
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'var(--font-body)',
-                  }}
-                >
-                  {displayCount > 9 ? '9+' : displayCount}
-                </span>
+                <span style={countBadgeStyle}>{displayCount > 9 ? '9+' : displayCount}</span>
               )}
             </button>
 

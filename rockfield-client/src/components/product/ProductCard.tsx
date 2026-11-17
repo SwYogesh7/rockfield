@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { Heart } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { QuickAddButton } from '@/components/product/QuickAddButton'
+import { useWishlistStore } from '@/store/wishlist'
 import type { ProductCardData } from '@/types'
 
 interface ProductCardProps {
@@ -41,7 +42,36 @@ export default function ProductCard({
   showAddToBag = false,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
-  const [isWishlisted, setIsWishlisted] = useState(false)
+
+  // Wishlist saves the same variant Quick Add uses: the first in-stock one (absent when sold out).
+  const wishlistVariant = data.quickAdd
+  const toggleWishlistItem = useWishlistStore((s) => s.toggleItem)
+  const isInWishlist = useWishlistStore((s) =>
+    wishlistVariant ? s.isWishlisted(wishlistVariant.variantId) : false
+  )
+  // mounted prevents Zustand persist rehydration from causing a hydration mismatch.
+  // Server always renders unfilled; client updates after mount.
+  const [mounted, setMounted] = useState(false)
+  const isWishlisted = mounted && isInWishlist
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, [])
+
+  const handleWishlistToggle = () => {
+    if (!wishlistVariant) return
+    toggleWishlistItem({
+      variantId: wishlistVariant.variantId,
+      productId: data.id,
+      slug: data.slug,
+      name: data.name,
+      colorName: wishlistVariant.colorName,
+      size: wishlistVariant.size,
+      image: wishlistVariant.image,
+      unitPrice: wishlistVariant.unitPrice,
+    })
+  }
 
   // Swatch interaction state for previewing colours (just visual on card)
   const [activeColorIdx, setActiveColorIdx] = useState(0)
@@ -128,13 +158,24 @@ export default function ProductCard({
 
           {/* ── WISHLIST BUTTON ── */}
           <button
+            type="button"
             onClick={(e) => {
+              // Inside the product link: keep the click from navigating.
               e.preventDefault()
-              setIsWishlisted(!isWishlisted)
+              handleWishlistToggle()
             }}
-            aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            disabled={!wishlistVariant}
+            aria-label={
+              !wishlistVariant
+                ? `Sold out: ${data.name}`
+                : isWishlisted
+                  ? `Remove from wishlist: ${data.name}`
+                  : `Add to wishlist: ${data.name}`
+            }
+            aria-pressed={wishlistVariant ? isWishlisted : undefined}
+            data-wishlist-variant-id={wishlistVariant?.variantId}
             className={cn(
-              "absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm transition-transform duration-200 hover:scale-105 outline-none focus-visible:ring-2 focus-visible:ring-gold-500",
+              "absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm transition-transform duration-200 hover:scale-105 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 disabled:cursor-not-allowed disabled:hover:scale-100",
               isHovered || isWishlisted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 lg:opacity-0"
             )}
           >
@@ -142,7 +183,11 @@ export default function ProductCard({
               size={14}
               className={cn(
                 "transition-colors",
-                isWishlisted ? "fill-error text-error" : "text-dark-400 hover:text-dark-900"
+                !wishlistVariant
+                  ? "text-dark-200"
+                  : isWishlisted
+                    ? "fill-error text-error"
+                    : "text-dark-400 hover:text-dark-900"
               )}
             />
           </button>
@@ -178,7 +223,7 @@ export default function ProductCard({
             {data.name}
           </h3>
         </Link>
-        
+
         <div className="flex items-center justify-between mt-1">
           <div className="flex items-baseline gap-2">
             <span className="font-body text-sm font-500 text-dark-900">
@@ -190,7 +235,7 @@ export default function ProductCard({
               </span>
             )}
           </div>
-          
+
           {/* Rating */}
           <div className="flex items-center gap-1" aria-label={`Rated ${data.rating} out of 5`}>
             <span className="font-body text-xs font-500 text-dark-900">{data.rating.toFixed(1)}</span>
@@ -213,8 +258,3 @@ export default function ProductCard({
     </motion.div>
   )
 }
-
-
-
-
-
