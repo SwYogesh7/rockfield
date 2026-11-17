@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -15,19 +15,21 @@ const getZoomSrc = (url: string) => url;
 
 export function ProductGallery({ images }: ProductGalleryProps) {
   const [activeIdx, setActiveIdx] = useState(0)
-  
+
   // Hover Zoom State
   const [isHovering, setIsHovering] = useState(false)
   const [origin, setOrigin] = useState({ x: 50, y: 50 })
-  
+
   // Lightbox State
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lbIdx, setLbIdx] = useState(0)
-  const [startX, setStartX] = useState<number | null>(null)
+  // Swipe start position. A ref (not state) so pointer moves don't trigger re-renders.
+  const swipeStartX = useRef<number | null>(null)
 
-  useEffect(() => {
-    if (lightboxOpen) setLbIdx(activeIdx)
-  }, [lightboxOpen, activeIdx])
+  const openLightbox = () => {
+    setLbIdx(activeIdx)
+    setLightboxOpen(true)
+  }
 
   useEffect(() => {
     if (!lightboxOpen) return
@@ -42,7 +44,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.matchMedia('(hover: none)').matches) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    
+
     const rect = e.currentTarget.getBoundingClientRect()
     const x = ((e.clientX - rect.left) / rect.width) * 100
     const y = ((e.clientY - rect.top) / rect.height) * 100
@@ -50,13 +52,23 @@ export function ProductGallery({ images }: ProductGalleryProps) {
     setIsHovering(true)
   }
 
-  const handlePointerDown = (e: React.PointerEvent) => setStartX(e.clientX)
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (startX === null) return
-    const deltaX = e.clientX - startX
-    if (deltaX > 50 && lbIdx > 0) setLbIdx(lbIdx - 1)
-    if (deltaX < -50 && lbIdx < images.length - 1) setLbIdx(lbIdx + 1)
-    setStartX(null)
+  const SWIPE_THRESHOLD_PX = 50
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    swipeStartX.current = e.clientX
+    // Keep receiving pointer events even if the finger/cursor leaves the element mid-swipe.
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+  }
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    const start = swipeStartX.current
+    swipeStartX.current = null
+    if (start === null) return
+    const deltaX = e.clientX - start
+    if (deltaX > SWIPE_THRESHOLD_PX) setLbIdx((p) => Math.max(0, p - 1))
+    if (deltaX < -SWIPE_THRESHOLD_PX) setLbIdx((p) => Math.min(images.length - 1, p + 1))
+  }
+  const handlePointerCancel = () => {
+    swipeStartX.current = null
   }
 
   if (!images.length) {
@@ -93,11 +105,11 @@ export function ProductGallery({ images }: ProductGalleryProps) {
         </div>
 
         {/* MAIN IMAGE */}
-        <div 
+        <div
           className="relative aspect-shoe-card w-full md:flex-1 bg-ivory-100 rounded-[var(--radius-md)] overflow-hidden cursor-zoom-in"
           onMouseMove={handleMouseMove}
           onMouseLeave={() => setIsHovering(false)}
-          onClick={() => setLightboxOpen(true)}
+          onClick={openLightbox}
           title="Zoom image"
         >
           <AnimatePresence mode="wait">
@@ -109,7 +121,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
               transition={{ duration: 0.3 }}
               className="absolute inset-0"
             >
-              <div 
+              <div
                 className="w-full h-full transition-transform duration-100 ease-out"
                 style={{
                   transform: isHovering ? 'scale(2)' : 'scale(1)',
@@ -131,44 +143,48 @@ export function ProductGallery({ images }: ProductGalleryProps) {
       </div>
 
       <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent 
-          showCloseButton={false} 
-          className="max-w-none w-screen h-[100dvh] bg-black/95 rounded-none border-none p-0 flex flex-col items-center justify-center overflow-hidden"
+        <DialogContent
+          showCloseButton={false}
+          className="z-[var(--z-modal)] max-w-none sm:max-w-none w-screen h-[100dvh] bg-black/95 rounded-none border-none p-0 flex flex-col items-center justify-center overflow-hidden"
           aria-describedby={undefined}
         >
           <DialogTitle className="sr-only">Product Image Gallery</DialogTitle>
-          
-          <button 
-            onClick={() => setLightboxOpen(false)} 
-            aria-label="Close" 
+
+          <button
+            onClick={() => setLightboxOpen(false)}
+            aria-label="Close"
             className="absolute top-4 right-4 md:top-6 md:right-6 text-white p-2 z-50 hover:text-gold-500 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
           >
             <X size={32} strokeWidth={1.5} />
           </button>
-          
+
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 md:px-8 pointer-events-none z-40">
-            <button 
-              onClick={(e) => { e.stopPropagation(); setLbIdx(p => Math.max(0, p - 1)); }} 
-              aria-label="Previous image" 
-              disabled={lbIdx === 0} 
+            <button
+              onClick={(e) => { e.stopPropagation(); setLbIdx(p => Math.max(0, p - 1)); }}
+              aria-label="Previous image"
+              disabled={lbIdx === 0}
               className="pointer-events-auto text-white disabled:opacity-20 hover:text-gold-500 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-gold-500 p-2"
             >
               <ChevronLeft size={40} strokeWidth={1.5} />
             </button>
-            <button 
-              onClick={(e) => { e.stopPropagation(); setLbIdx(p => Math.min(images.length - 1, p + 1)); }} 
-              aria-label="Next image" 
-              disabled={lbIdx === images.length - 1} 
+            <button
+              onClick={(e) => { e.stopPropagation(); setLbIdx(p => Math.min(images.length - 1, p + 1)); }}
+              aria-label="Next image"
+              disabled={lbIdx === images.length - 1}
               className="pointer-events-auto text-white disabled:opacity-20 hover:text-gold-500 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-gold-500 p-2"
             >
               <ChevronRight size={40} strokeWidth={1.5} />
             </button>
           </div>
-          
-          <div 
+
+          <div
             className="w-full h-full relative touch-none"
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
+            // Stop the browser's native image drag, which would cancel the pointer stream
+            // (pointercancel, no pointerup) and swallow the swipe.
+            onDragStart={(e) => e.preventDefault()}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -179,11 +195,12 @@ export function ProductGallery({ images }: ProductGalleryProps) {
                 transition={{ duration: 0.2 }}
                 className="absolute inset-0"
               >
-                <ImageWithFallback 
-                  src={getZoomSrc(images[lbIdx].url)} 
-                  alt={images[lbIdx].alt} 
-                  fill 
-                  className="object-contain p-4 md:p-12" 
+                <ImageWithFallback
+                  src={getZoomSrc(images[lbIdx].url)}
+                  alt={images[lbIdx].alt}
+                  fill
+                  draggable={false}
+                  className="object-contain p-4 md:p-12 select-none"
                   sizes="100vw"
                 />
               </motion.div>
