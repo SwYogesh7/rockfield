@@ -181,7 +181,8 @@ export default function Navbar() {
 
             {/* Wishlist — desktop only */}
             {isDesktop && (
-              <button
+              <Link
+                href="/wishlist"
                 aria-label={`Wishlist — ${displayWishlistCount} items`}
                 style={{ ...iconBtnStyle, position: 'relative' }}
                 onMouseEnter={(e) =>
@@ -197,7 +198,7 @@ export default function Navbar() {
                     {displayWishlistCount > 9 ? '9+' : displayWishlistCount}
                   </span>
                 )}
-              </button>
+              </Link>
             )}
 
             {/* Cart — always visible */}

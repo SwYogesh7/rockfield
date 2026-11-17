@@ -13,7 +13,7 @@ const CART_KEY = 'rockfield-cart';
 // so this never matches the disabled heart on a sold-out card.
 const hearts = (page: Page) => page.locator('button[data-wishlist-variant-id]');
 const cardNames = (page: Page) => page.locator('main h3');
-const wishlistNavButton = (page: Page) => page.locator('header button[aria-label^="Wishlist"]');
+const wishlistNavButton = (page: Page) => page.locator('header a[aria-label^="Wishlist"]');
 const wishlistBadge = (page: Page) => page.getByTestId('wishlist-count');
 const cartButton = (page: Page) => page.locator('header button[aria-label^="Cart"]');
 
