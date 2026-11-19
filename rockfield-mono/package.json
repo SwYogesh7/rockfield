@@ -11,8 +11,10 @@
   },
   "scripts": {
     "dev": "npm run dev --workspace=apps/rockfield-web",
+    "dev:api": "npm run dev --workspace=apps/rockfield-api",
     "build": "npm run build --workspace=apps/rockfield-web",
     "lint": "npm run lint --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test:e2e": "npm run test --workspace=apps/rockfield-web --if-present"
   }
 }
