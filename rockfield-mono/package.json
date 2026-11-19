@@ -15,6 +15,6 @@
     "build": "npm run build --workspace=apps/rockfield-web",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "test:e2e": "npm run test --workspace=apps/rockfield-web --if-present"
+    "test:e2e": "npm run test:e2e --workspace=apps/rockfield-web"
   }
 }
